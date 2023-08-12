@@ -121,3 +121,7 @@ def mark_as_unimportant(request):
         g.important = False
         g.save()
         return HttpResponse('Grievance marked as unimportant')
+
+
+def agendas(request):
+    return render(request, 'agendas.html', {'grievances': Grievance.objects.filter(made_by__village_id=request.user.village.id, important=True), 'village': Village.objects.get(id=request.user.village.id)})

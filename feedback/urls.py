@@ -9,5 +9,6 @@ urlpatterns = [
     path('village/<int:village_id>', views.village, name='village'),
     path('share-grievance/', views.share_grievance, name='share_grievance'),
     path('mark-important/', views.mark_as_important, name='mark_imp'),
-    path('mark-unimportant/', views.mark_as_unimportant, name='mark_unimp')
+    path('mark-unimportant/', views.mark_as_unimportant, name='mark_unimp'),
+    path('agendas/', views.agendas)
 ]

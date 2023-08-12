@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Important agendas{% endblock %}
+{% block body %}
+    {% load static %}
+    {% load feedbacktags %}
+
+    {% if grievances %}
+        <h1>Important agendas for {{ village.name }}</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Made by</th>
+                <th scope="col">Date</th>
+                <th scope="col">Audio</th>
+            </tr>
+            </thead>
+            {% for grievance in grievances %}
+                <tr id="{{ grievance.id }}">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ grievance.made_by.name }}</td>
+                    <td>{{ grievance.date }}</td>
+                    <td><audio src="{% get_media_prefix %}{{ grievance.audio }}" controls></audio></td>
+                    {% village_admin request.user as vil_adm %}
+                    {% if vil_adm %}
+                        <td>
+                            <button onclick="send_unimpreq({{ grievance.id }})">Mark as resolved</button>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h1>No important agendas are specified for {{ village.name }}</h1>
+    {% endif %}
+
+    <script src="{% static 'imp_unimp.js' %}"></script>
+{% endblock %}
