@@ -3,6 +3,7 @@
 {% block title %}Meeting in {{ request.user.village }} on {{ meeting.date }}{% endblock %}
 
 {% block body %}
+    <!-- load script -->
     {% load widget_tweaks %}
     {% load feedbacktags %}
     <video src="{% get_media_prefix %}{{ meeting.recording }}" controls></video>

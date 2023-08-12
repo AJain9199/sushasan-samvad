@@ -1,9 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from .models import User, Meeting, MeetingSuggestion
+from .models import User, Meeting, MeetingSuggestion, Grievance
 from django import forms
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group
+from django.urls import reverse
 
 
 class RegistrationForm(ModelForm):
@@ -34,4 +35,10 @@ class UploadMeetingForm(ModelForm):
 class SuggestionForm(ModelForm):
     class Meta:
         model = MeetingSuggestion
+        fields = ('audio', )
+
+
+class ShareGrievanceForm(ModelForm):
+    class Meta:
+        model = Grievance
         fields = ('audio', )

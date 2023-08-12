@@ -1,9 +1,12 @@
+from threading import Thread
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm
-from .models import Meeting, MeetingSuggestion, District, Village
+from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm
+from .models import Meeting, MeetingSuggestion, District, Village, Grievance
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 
 
@@ -51,8 +54,10 @@ def upload_meeting(request):
         meeting = form.save(commit=False)
         meeting.village = request.user.village
         meeting.save()
+        meeting.generate_transcript()
         if not form.is_valid():
             return render(request, 'upload_meeting.html', {'form': form})
+        return HttpResponseRedirect(reverse('meeting', args=(meeting.id, )))
 
 
 def meeting(request, meeting_id):
@@ -84,4 +89,35 @@ def district(request, dist_id):
 
 def village(request, village_id):
     meetings = Meeting.objects.filter(village_id=village_id)
-    return render(request, 'village.html', {'meetings': meetings, 'village': Village.objects.get(id=village_id)})
+    grievances = Grievance.objects.filter(made_by__village_id=village_id)
+    return render(request, 'village.html', {'meetings': meetings, 'village': Village.objects.get(id=village_id), 'grievances': grievances})
+
+
+def share_grievance(request):
+    if request.method == 'GET':
+        form = ShareGrievanceForm()
+        return render(request, 'upload grievance.html', {'form': form})
+    elif request.method == 'POST':
+        form = ShareGrievanceForm(request.POST, request.FILES)
+        grievance = form.save(commit=False)
+        grievance.made_by = request.user
+        grievance.save()
+        return HttpResponseRedirect(reverse('village', args=(request.user.village_id, )))
+
+
+@csrf_exempt
+def mark_as_important(request):
+    if request.method == 'POST':
+        g = Grievance.objects.get(id=request.POST['id'])
+        g.important = True
+        g.save()
+        return HttpResponse('Grievance marked as important')
+
+
+@csrf_exempt
+def mark_as_unimportant(request):
+    if request.method == 'POST':
+        g = Grievance.objects.get(id=request.POST['id'])
+        g.important = False
+        g.save()
+        return HttpResponse('Grievance marked as unimportant')

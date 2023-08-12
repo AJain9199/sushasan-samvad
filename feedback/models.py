@@ -1,7 +1,25 @@
+import datetime
+import os
+import time
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
+import moviepy.editor as mp
+import speech_recognition as sr
+from threading import Thread
+from django.conf import settings
+
+
+def get_transcript(filepath, recording_name):
+    vid = mp.VideoFileClip(filepath)
+    vid.audio.write_audiofile(f"{recording_name}_audio.wav")
+    r = sr.Recognizer()
+    with sr.AudioFile(f"{recording_name}_audio.wav") as source:
+        data = r.record(source)
+        text = r.recognize_google(data, language="hi-In")
+    return text.encode('utf-8')
 
 
 class State(models.Model):
@@ -75,9 +93,21 @@ class Meeting(models.Model):
     date = models.DateField(_("Meeting date"))
     recording = models.FileField(_("Meeting recording"), upload_to="meetings", validators=[validate_video])
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    transcript = models.TextField(default="The transcript for this field is currently being generated...")
+
+    def generate_transcript(self):
+        self.transcript = get_transcript(self.recording.path, self.recording.name).decode('utf-8')
+        self.save()
 
 
 class MeetingSuggestion(models.Model):
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
     audio = models.FileField(_("Meeting suggestion"), upload_to="suggestions", validators=[validate_audio])
     made_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Grievance(models.Model):
+    audio = models.FileField(_("Grievance"), upload_to="grievances", validators=[validate_audio])
+    date = models.DateField(default=datetime.datetime.now().date())
+    made_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    important = models.BooleanField(default=False)

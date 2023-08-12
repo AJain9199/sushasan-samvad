@@ -1,21 +1,53 @@
 {% extends "base.html" %}
 {% block title %}
-Village {{ village.name }}
+    Village {{ village.name }}
 {% endblock %}
 {% block body %}
+    {% load widget_tweaks %}
+    {% load static %}
     <h1>Grievances shared by residents of {{ village.name }}</h1>
+    {% if grievances %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Shared by</th>
+                <th scope="col">Shared on</th>
+                <th scope="col">Audio</th>
+            </tr>
+            </thead>
+            {% for grievance in grievances %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ grievance.made_by.name }}</td>
+                    <td>{{ grievance.date }}</td>
+                    <td>
+                        <audio src="{% get_media_prefix %}{{ grievance.audio }}" controls></audio>
+                    </td>
+                    <td>
+                        <button onclick="sendimp_req({{ grievance.id }})" id="{{ grievance.id }}_imp">Mark as important</button>
+                        <button onclick="sendunimp_req({{ grievance.id }})" id="{{ grievance.id }}_unimp" style="display: none">Mark as unimportant</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h2>No grievances have been shared yet for this village</h2>
+    {% endif %}
     <h1>Meetings of {{ village.name }}</h1>
     {% load feedbacktags %}
     {% village_admin request.user as is_village_admin %}
     {% if is_village_admin %}
-        <a href="/upload_meeting"><button>Upload new meeting</button></a>
+        <a href="/upload_meeting">
+            <button>Upload new meeting</button>
+        </a>
     {% endif %}
     <table class="table">
         <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Held on</th>
-            </tr>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Held on</th>
+        </tr>
         </thead>
         {% for meeting in meetings %}
             <tr>
@@ -24,4 +56,49 @@ Village {{ village.name }}
             </tr>
         {% endfor %}
     </table>
+
+    <script>
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        var csrftoken = getCookie('csrftoken');
+        function sendimp_req(x) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/mark-important/')
+
+            xhr.setRequestHeader("x-csrf-token", csrftoken);
+            var data = new FormData();
+            data.append('id', x);
+            xhr.send(data)
+
+            document.getElementById(x + "_unimp").style.display = 'block'
+            document.getElementById(x + "_imp").style.display = 'none'
+        }
+
+        function sendunimp_req(x) {
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/mark-unimportant/')
+
+            xhr.setRequestHeader("x-csrf-token", csrftoken);
+            var data = new FormData();
+            data.append('id', x);
+            xhr.send(data)
+
+            document.getElementById(x + "_unimp").style.display = 'none'
+            document.getElementById(x + "_imp").style.display = 'block'
+        }
+    </script>
 {% endblock %}
