@@ -111,3 +111,8 @@ class Grievance(models.Model):
     date = models.DateField(default=datetime.datetime.now().date())
     made_by = models.ForeignKey(User, on_delete=models.CASCADE)
     important = models.BooleanField(default=False)
+
+
+class ScheduleMeeting(models.Model):
+    village = models.ForeignKey(Village, on_delete=models.CASCADE)
+    date = models.DateField()

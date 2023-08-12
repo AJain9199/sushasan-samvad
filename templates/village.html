@@ -5,6 +5,7 @@
 {% block body %}
     {% load widget_tweaks %}
     {% load static %}
+    <div id="calendar"></div>
     <h1>Grievances shared by residents of {{ village.name }}</h1>
     {% if grievances %}
         <table class="table">
@@ -58,4 +59,28 @@
     </table>
 
     <script src="{% static 'imp_unimp.js' %}"></script>
+    <script>
+        var element = document.getElementById("calendar");
+        // Create the calendar
+
+        const date = new Date();
+
+        let currentDay= String(date.getDate()).padStart(2, '0');
+
+        let currentMonth = String(date.getMonth()+1).padStart(2,"0");
+
+        let currentYear = date.getFullYear();
+
+        // we will display the date as DD-MM-YYYY
+
+        let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
+        var myCalendar = jsCalendar.new(element, currentDate);
+        // Get the button
+        var button = document.getElementById("my-button");
+        // Add a button event
+        button.addEventListener("click", function(){
+            // Go to the previous month
+            myCalendar.previous();
+        }, false);
+    </script>
 {% endblock %}
