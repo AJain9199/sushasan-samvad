@@ -91,7 +91,7 @@ def district(request, dist_id):
 def village(request, village_id):
     meetings = Meeting.objects.filter(village_id=village_id)
     grievances = Grievance.objects.filter(made_by__village_id=village_id)
-    return render(request, 'village.html', {'meetings': meetings, 'village': Village.objects.get(id=village_id), 'grievances': grievances})
+    return render(request, 'village.html', {'meetings': meetings, 'village': Village.objects.get(id=village_id), 'grievances': grievances, 'num_meetings': len(ScheduleMeeting.objects.filter(village=request.user.village))})
 
 
 def share_grievance(request):

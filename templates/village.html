@@ -5,6 +5,8 @@
 {% block body %}
     {% load widget_tweaks %}
     {% load static %}
+    <h1>Scheduled meetings for {{ village.name }}</h1>
+    <p>There are {{ num_meetings }} scheduled for {{ village.name }}</p>
     <div id="calendar" style="margin-left: 420px; padding: 4px 4px;"></div>
     <h1 class="strip">Grievances shared by residents of {{ village.name }}</h1>
     {% if grievances %}
