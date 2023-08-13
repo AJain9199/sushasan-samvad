@@ -56,7 +56,6 @@ def upload_meeting(request):
         meeting = form.save(commit=False)
         meeting.village = request.user.village
         meeting.save()
-        meeting.generate_transcript()
         if not form.is_valid():
             return render(request, 'upload_meeting.html', {'form': form})
         return HttpResponseRedirect(reverse('meeting', args=(meeting.id, )))
@@ -153,6 +152,6 @@ def scheduled_meeting(request):
         scheduled_meetings = ScheduleMeeting.objects.filter(village=request.POST['id'])
         meets = {}
         for meeting in scheduled_meetings:
-            meets[meeting.id] = meeting.date
+            meets[meeting.id] = f"{meeting.date.day}/{meeting.date.month}/{meeting.date.year}"
 
-        return HttpResponse(meets)
+        return JsonResponse(meets)
