@@ -75,6 +75,21 @@
 
         let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
         var myCalendar = jsCalendar.new(element, currentDate);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/scheduled_meetings/')
+
+        xhr.setRequestHeader("x-csrf-token", csrftoken);
+        var data = new FormData();
+        data.append('id', {{ request.user.village.id }});
+        xhr.send(data);
+
+        fetch('/scheduled_meetings/', {
+            method: 'post',
+            body: JSON.stringify({'id': {{ request.user.village.id }}}),
+        }).then(response => console.log(response.json()))
+
+
         // Get the button
         var button = document.getElementById("my-button");
         // Add a button event

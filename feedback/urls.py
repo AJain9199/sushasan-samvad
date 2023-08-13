@@ -10,5 +10,8 @@ urlpatterns = [
     path('share-grievance/', views.share_grievance, name='share_grievance'),
     path('mark-important/', views.mark_as_important, name='mark_imp'),
     path('mark-unimportant/', views.mark_as_unimportant, name='mark_unimp'),
-    path('agendas/', views.agendas)
+    path('agendas/', views.agendas),
+    path('schedule-meeting/', views.schedule_meeting, name='schedule_meeting'),
+    path('', views.index, name='index'),
+    path('scheduled-meetings/', views.scheduled_meeting, name='scheduled_meeting')
 ]

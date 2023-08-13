@@ -3,6 +3,9 @@
     Schedule a Panchayat Meeting for {{ village.name }}
 {% endblock %}
 {% block body %}
+    {% load static %}
+    {% load feedbacktags %}
+    {% load widget_tweaks %}
 	<form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
@@ -11,7 +14,7 @@
             {% for field in form.visible_fields %}
                 <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:'form-control' }}
+                    {{ field|add_class:'form-control mb-1' }}
                     {% for error in field.errors %}
                         <span class="help-block">{{ error }}</span>
                     {% endfor %}

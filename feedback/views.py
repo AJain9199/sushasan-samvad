@@ -1,9 +1,9 @@
 from threading import Thread
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
-from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm
-from .models import Meeting, MeetingSuggestion, District, Village, Grievance
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm
+from .models import Meeting, MeetingSuggestion, District, Village, Grievance, ScheduleMeeting
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -125,3 +125,30 @@ def mark_as_unimportant(request):
 
 def agendas(request):
     return render(request, 'agendas.html', {'grievances': Grievance.objects.filter(made_by__village_id=request.user.village.id, important=True), 'village': Village.objects.get(id=request.user.village.id)})
+
+
+def schedule_meeting(request):
+    if request.method == 'GET':
+        form = ScheduleMeetingForm()
+        return render(request, 'schedule_meeting.html', {'form': form})
+    elif request.method == 'POST':
+        form = ScheduleMeetingForm(request.POST)
+        scheduled_meeting = form.save(commit=False)
+        scheduled_meeting.village = request.user.village
+        scheduled_meeting.save()
+
+        return HttpResponseRedirect(reverse('village', args=(request.user.village.id, )))
+
+
+def index(request):
+    return render(request, "index.html")
+
+
+def scheduled_meeting(request):
+    if request.method == 'POST':
+        scheduled_meetings = ScheduleMeeting.objects.filter(village=request.POST['id'])
+        meets = {}
+        for meeting in scheduled_meetings:
+            meets[meeting.id] = meeting.date
+
+        return HttpResponse(meets)

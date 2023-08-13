@@ -1,27 +1,90 @@
 {% load widget_tweaks %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="{% static 'style.css' %}" rel="stylesheet">
 </head>
 <body>
 <!-- jsCalendar v1.4.4 Javascript and CSS from unpkg cdn -->
-<script src="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.js" integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.css" integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
+<script src="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.js"
+        integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB"
+        crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.css"
+      integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
+{% load feedbacktags %}
+{% dist_admin request.user as dst_admin %}
+{% village_admin request.user as vil_admin %}
+<nav class="navbar navbar-expand-lg bg-light-subtle">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="प्रॉजेक्ट सुशासन संवाद" width="240"
+                                              height="90"><!--logo-->
+        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent"><!--navbar starting-->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <ul class="nav nav-underline">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-house" viewBox="0 0 16 16">
+                                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
+                                </svg>&nbsp;&nbsp;Home</a><!--home-->
+                        </li>
+                        {% if dist_admim %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'district' request.user.district.id %}">&nbsp;District</a>
+                            </li>
+                        {% elif vil_admin %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'village' request.user.village.id %}">&nbsp;Village</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'schedule_meeting' %}">&nbsp;Schedule Meeting</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'village' request.user.village.id %}">&nbsp;District</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'share_grievance' %}">&nbsp;Share your grievance</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+        </div>
+    </div>
+</nav>
+
 {% block body %}{% endblock %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
 <script type="text/javascript">
-    (function(d, m){
+    (function (d, m) {
         var kommunicateSettings =
-            {"appId":"35c173813c300bc9bc342d3e99228100e","popupWidget":true,"automaticChatOpenOnNavigation":true};
-        var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+            {"appId": "35c173813c300bc9bc342d3e99228100e", "popupWidget": true, "automaticChatOpenOnNavigation": true};
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
         s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
-        var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
-        window.kommunicate = m; m._globals = kommunicateSettings;
+        var h = document.getElementsByTagName("head")[0];
+        h.appendChild(s);
+        window.kommunicate = m;
+        m._globals = kommunicateSettings;
     })(document, window.kommunicate || {});
-/* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
+    /* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
 </script>
 </body>
 </html>
