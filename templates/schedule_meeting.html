@@ -6,6 +6,8 @@
     {% load static %}
     {% load feedbacktags %}
     {% load widget_tweaks %}
+        <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">Schedule Meeting</h1>
+<div class="backdrop">
 	<form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
@@ -26,4 +28,5 @@
                 </button>
             </div>
         </form>
+</div>
 {% endblock %}
