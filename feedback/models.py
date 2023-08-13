@@ -93,11 +93,6 @@ class Meeting(models.Model):
     date = models.DateField(_("Meeting date"))
     recording = models.FileField(_("Meeting recording"), upload_to="meetings", validators=[validate_video])
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
-    transcript = models.TextField(default="The transcript for this field is currently being generated...")
-
-    def generate_transcript(self):
-        self.transcript = get_transcript(self.recording.path, self.recording.name).decode('utf-8')
-        self.save()
 
 
 class MeetingSuggestion(models.Model):

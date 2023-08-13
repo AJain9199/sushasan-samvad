@@ -54,7 +54,6 @@ def upload_meeting(request):
         meeting = form.save(commit=False)
         meeting.village = request.user.village
         meeting.save()
-        meeting.generate_transcript()
         if not form.is_valid():
             return render(request, 'upload_meeting.html', {'form': form})
         return HttpResponseRedirect(reverse('meeting', args=(meeting.id, )))
