@@ -13,6 +13,7 @@
                 <th class="tbla" scope="col">Made by</th>
                 <th class="tbla" scope="col">Date</th>
                 <th class="tbla" scope="col">Audio</th>
+                <th class="tbla" scope="col"></th>
             </tr>
             </thead>
             {% for grievance in grievances %}
@@ -23,8 +24,8 @@
                     <td class="tbla"><audio src="{% get_media_prefix %}{{ grievance.audio }}" controls></audio></td>
                     {% village_admin request.user as vil_adm %}
                     {% if vil_adm %}
-                        <td>
-                            <button onclick="send_unimpreq({{ grievance.id }})">Mark as resolved</button>
+                        <td class="tbla">
+                            <button class="btn btn-warning" onclick="send_unimpreq({{ grievance.id }})">Mark as resolved</button>
                         </td>
                     {% endif %}
                 </tr>
