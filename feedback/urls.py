@@ -13,5 +13,6 @@ urlpatterns = [
     path('agendas/', views.agendas),
     path('schedule-meeting/', views.schedule_meeting, name='schedule_meeting'),
     path('', views.index, name='index'),
-    path('scheduled-meetings/', views.scheduled_meeting, name='scheduled_meeting')
+    path('scheduled-meetings/', views.scheduled_meeting, name='scheduled_meeting'),
+    path('community/', views.community, name='community')
 ]

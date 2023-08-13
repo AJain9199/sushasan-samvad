@@ -4,14 +4,15 @@
 
 {% load widget_tweaks %}
 {% block body %}
-    <form method="post">
+    <h1 class="_heading" style="font-size: 68px;">Register</h1>
+    <form style="width: 25%; margin-left: 734px;" method="post">
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
       {{ hidden }}
     {% endfor %}
     {% for field in form.visible_fields %}
       <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field|add_class:'form-control' }}
         {% for error in field.errors %}
           <span class="help-block">{{ error }}</span>
@@ -19,8 +20,8 @@
       </div>
     {% endfor %}
     <div class="form-group">
-      <button type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-ok"></span> Save
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-ok"></span> Register
       </button>
     </div>
     </form>

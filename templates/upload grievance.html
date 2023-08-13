@@ -2,14 +2,16 @@
 {% block title %}Share your grievance{% endblock %}
 {% block body %}
     {% load widget_tweaks %}
-    <h1>Share your grievances</h1>
+    <h1 class="_heading" style="font-size: 68px;">Share your grievances</h1>
+    <div class="cntr">
+    <h3>Upload a  voice message to report your grievance(s)</h3>
     <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
             {% for field in form.visible_fields %}
-                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                <div style="width: 20%" class="form-group mb-3" id="div_{{ field.id_for_label }}">
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field|add_class:'form-control' }}
                     {% for error in field.errors %}
@@ -19,8 +21,117 @@
             {% endfor %}
             <div class="form-group">
                 <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-ok"></span> Save
+                    <span class="glyphicon glyphicon-ok"></span> Upload
                 </button>
             </div>
         </form>
+    <div style="margin-top: 50px;margin-bottom: 50px;">
+    <h3> Record your grievance(s)</h3>
+
+    <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls></audio>
+
+    <button type="button" class="btn btn-primary" id="startButton">Start Recording</button>
+    <button type="button" class="btn btn-primary" id="stopButton">Stop Recording</button>
+    <button type="button" class="btn btn-primary" id="playButton">Play Recorded Audio</button>
+    </div>
+
+        <div style="margin-top: 25px;">
+   <h3> Type in your grievance(s) </h3>
+    <div class="mb-3">
+  <textarea style="width: 60%" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+</div>
+        </div>
+</div>
+
+    <script>
+        // Audio recording code here
+    </script>
+</html>
+
+<script>
+const startButton = document.getElementById("startButton");
+const stopButton = document.getElementById("stopButton");
+const playButton = document.getElementById("playButton");
+const audioPlayer = document.getElementById("audioPlayer");
+
+let mediaRecorder;
+let audioChunks = [];
+
+// Initialize audio recorder
+navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+
+        // Handle recording data
+        mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        };
+
+        // Handle end of recording
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioPlayer.src = audioUrl;
+        };
+    });
+
+// Start recording
+startButton.onclick = () => {
+    audioChunks = [];
+    mediaRecorder.start();
+    startButton.disabled = true;
+    stopButton.disabled = false;
+};
+
+// Stop recording
+stopButton.onclick = () => {
+    mediaRecorder.stop();
+    startButton.disabled = false;
+    stopButton.disabled = true;
+};
+
+// Play recorded audio
+playButton.onclick = () => {
+    audioPlayer.play();
+};
+
+const express = require("express");
+const app = express();
+const fs = require("fs");
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.json());
+
+// Store audio data
+app.post("/api/recordings", (req, res) => {
+    const audioData = req.body.audio;
+    const audioBuffer = Buffer.from(audioData, "base64");
+    const audioPath = "recordings/recorded_audio.wav";
+
+    fs.writeFileSync(audioPath, audioBuffer);
+
+    res.json({ message: "Audio recording saved successfully." });
+});
+
+// Retrieve recorded audio
+app.get("/api/recordings", (req, res) => {
+    const audioPath = "recordings/recorded_audio.wav";
+    const audioBuffer = fs.readFileSync(audioPath);
+
+    res.writeHead(200, {
+        "Content-Type": "audio/wav",
+        "Content-Length": audioBuffer.length
+    });
+
+    res.end(audioBuffer);
+});
+
+app.listen(3000, () => {
+    console.log("API server is running on port 3000.");
+});
+</script>
+
+
 {% endblock %}

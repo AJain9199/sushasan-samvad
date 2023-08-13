@@ -5,37 +5,39 @@
 {% block body %}
     {% load widget_tweaks %}
     {% load static %}
-    <div id="calendar"></div>
-    <h1>Grievances shared by residents of {{ village.name }}</h1>
+    <div id="calendar" style="margin-left: 420px; padding: 4px 4px;"></div>
+    <h1 class="strip">Grievances shared by residents of {{ village.name }}</h1>
     {% if grievances %}
+        <div class="gcn">
         <table class="table">
             <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Shared by</th>
-                <th scope="col">Shared on</th>
-                <th scope="col">Audio</th>
+            <tr >
+                <th class="tbla" scope="col">#</th>
+                <th class="tbla"scope="col">Shared by</th>
+                <th class="tbla"scope="col">Shared on</th>
+                <th class="tbla"scope="col">Audio</th>
             </tr>
             </thead>
             {% for grievance in grievances %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ grievance.made_by.name }}</td>
-                    <td>{{ grievance.date }}</td>
-                    <td>
+                    <th class="tbla"scope="row">{{ forloop.counter }}</th>
+                    <td class="tbla">{{ grievance.made_by.name }}</td>
+                    <td class="tbla">{{ grievance.date }}</td>
+                    <td class="tbla">
                         <audio src="{% get_media_prefix %}{{ grievance.audio }}" controls></audio>
                     </td>
-                    <td>
-                        <button onclick="sendimp_req({{ grievance.id }})" id="{{ grievance.id }}_imp">Mark as important</button>
-                        <button onclick="sendunimp_req({{ grievance.id }})" id="{{ grievance.id }}_unimp" style="display: none">Mark as unimportant</button>
+                    <td class="tbla">
+                        <button class="btn btn-success" onclick="sendimp_req({{ grievance.id }})" id="{{ grievance.id }}_imp">Mark as important</button>
+                        <button class="btn btn-danger" onclick="sendunimp_req({{ grievance.id }})" id="{{ grievance.id }}_unimp" style="display: none">Mark as Unimportant</button>
                     </td>
                 </tr>
             {% endfor %}
         </table>
+        </div>
     {% else %}
         <h2>No grievances have been shared yet for this village</h2>
     {% endif %}
-    <h1>Meetings of {{ village.name }}</h1>
+    <h1 class="strip" style="background-color: #c8d9216b !important;">Meetings of {{ village.name }}</h1>
     {% load feedbacktags %}
     {% village_admin request.user as is_village_admin %}
     {% if is_village_admin %}
@@ -43,9 +45,8 @@
             <button>Upload new meeting</button>
         </a>
     {% endif %}
-    <table class="table">
+    <table style="width: 30%; margin-left: 40px; margin-top: 30px;" class="table">
         <thead>
-        <tr>
             <th scope="col">#</th>
             <th scope="col">Held on</th>
         </tr>

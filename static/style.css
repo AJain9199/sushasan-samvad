@@ -5,7 +5,27 @@ body {
   background-size: 100% 100%;
 
 }
-
+.strip
+{
+  padding: 30px 20px;
+  background-color: #ff00005e;
+  width: 70%;"
+}
+.cntr {
+    padding: 21px 47px;}
+.gcn {
+  width: 70%;
+  margin-left: 100px;
+}
+.tbla {
+    background-color: rgba(233, 233, 233, 0.61) !important;
+  font-weight: bolder;
+  font-size: 18px;
+  }
+._heading {
+  font-size: 20px;
+  text-align: center;
+}
 .searchbar {
     margin-top: -60px;
     margin-left: 700px;

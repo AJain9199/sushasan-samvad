@@ -45,6 +45,8 @@ def register(request):
             return HttpResponseRedirect(reverse('village', args=[user.village_id]))
 
 
+def community(request):
+    return render(request, "community.html")
 def upload_meeting(request):
     if request.method == 'GET':
         form = UploadMeetingForm()

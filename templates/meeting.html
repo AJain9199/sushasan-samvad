@@ -6,7 +6,7 @@
     <!-- load script -->
     {% load widget_tweaks %}
     {% load feedbacktags %}
-    <video src="{% get_media_prefix %}{{ meeting.recording }}" controls></video>
+    <video style="height: 500px;margin-left: 40px;margin-top: 40px;" src="{% get_media_prefix %}{{ meeting.recording }}" controls></video>
     {% village_admin request.user as is_vil_admin %}
     {% dist_admin request.user as is_dist_admin %}
     {% if is_vil_admin or is_dist_admin %}
@@ -34,7 +34,7 @@
             <h1>No suggestions have been shared for this meeting.</h1>
         {% endif %}
     {% else %}
-        <h1>Share your suggestions for this meeting</h1>
+        <h1 style="margin-top: 50px; margin-left: 40px;">Share your suggestions for this meeting</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
