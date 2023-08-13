@@ -4,11 +4,22 @@
 ![Website screenshot](static/Screenshot%201.jpg)
 ![Website screenshot](static/Screenshot%202.jpg)
 ## Technologies Used
- - Python (with the Django framework)
+### Languages
+ - Python
  - HTML
  - CSS
  - JavaScript
  - SQLite
+### Frameworks
+ - Django (Python)
+ - Bootstrap (CSS)
+
+## To run (locally)
+1. Firstly, install the pip dependencies via the following command:  
+    ```pip install -r requirements.txt```
+2. Then, run Django's `manage.py` to start the development server, replacing `your_port` with an appropriate port on your development machine:   
+    ```python manage.py runserver localhost:<your_port>```
+3. Open the URL in your web browser and you're ready to go!
 
 ## Authors
 The following students from St. Kabir Public School, Sector-26, Chandigarh came up with and worked on the idea of 'Sushasan Samvad'
