@@ -144,8 +144,10 @@ def index(request):
     return render(request, "index.html")
 
 
+@csrf_exempt
 def scheduled_meeting(request):
     if request.method == 'POST':
+        print(request.POST)
         scheduled_meetings = ScheduleMeeting.objects.filter(village=request.POST['id'])
         meets = {}
         for meeting in scheduled_meetings:
