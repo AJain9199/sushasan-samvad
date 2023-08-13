@@ -45,7 +45,15 @@
                                 <a class="nav-link"
                                    href="{% url 'district' request.user.district.id %}">&nbsp;District</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
+                            </li>
                         {% elif vil_admin %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link"
                                    href="{% url 'village' request.user.village.id %}">&nbsp;Village</a>
