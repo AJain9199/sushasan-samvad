@@ -2,9 +2,12 @@
 {% block title %}Upload a Meeting{% endblock %}
 {% block body %}
 {% load widget_tweaks %}
+
+    <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">Upload meeting</h1>
+    <div class="backdrop">
     <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% for hidden in form.hidden_fields %}
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
       {{ hidden }}
     {% endfor %}
     {% for field in form.visible_fields %}
@@ -21,5 +24,7 @@
         <span class="glyphicon glyphicon-ok"></span> Save
       </button>
     </div>
+
     </form>
+    </div>
 {% endblock %}
