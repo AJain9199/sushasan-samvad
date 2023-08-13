@@ -1,15 +1,10 @@
 import datetime
-import os
-import time
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext as _
 import moviepy.editor as mp
 import speech_recognition as sr
-from threading import Thread
-from django.conf import settings
 
 
 def get_transcript(filepath, recording_name):
