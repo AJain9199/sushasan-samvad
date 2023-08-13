@@ -80,16 +80,11 @@
         data.append('id', {{ request.user.village.id }});
         fetch('/scheduled-meetings/', {
             method: 'post',
-            body: {'id': {{ request.user.village.id }}},
-        }).then(response => console.log(response))
-
-
-        // Get the button
-        var button = document.getElementById("my-button");
-        // Add a button event
-        button.addEventListener("click", function(){
-            // Go to the previous month
-            myCalendar.previous();
-        }, false);
+            body: data,
+        }).then(response => response.json()).then((data) => {
+            for (let date in data) {
+                myCalendar.select(Object.values(data));
+            }
+        })
     </script>
 {% endblock %}

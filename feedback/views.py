@@ -151,6 +151,6 @@ def scheduled_meeting(request):
         scheduled_meetings = ScheduleMeeting.objects.filter(village=request.POST['id'])
         meets = {}
         for meeting in scheduled_meetings:
-            meets[meeting.id] = meeting.date
+            meets[meeting.id] = f"{meeting.date.day}/{meeting.date.month}/{meeting.date.year}"
 
-        return HttpResponse(meets)
+        return JsonResponse(meets)
