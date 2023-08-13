@@ -1,5 +1,5 @@
 # Sushasan Samvad
-![Website screenshot][https://raw.githubusercontent.com/AJain9199/sushasan-samvad/master/static/Screenshot.jpg]
+![Website screenshot](static/Screenshot.jpg)
 ## Technologies Used
  - Python (with the Django framework)
  - HTML
