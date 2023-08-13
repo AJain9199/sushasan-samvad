@@ -10,6 +10,14 @@
  - JavaScript
  - SQLite
 
+## Authors
+The following students from St. Kabir Public School, Sector-26, Chandigarh came up with and worked on the idea of 'Sushasan Samvad'
+ - Aryaman Jain
+ - Vansh Khera
+ - Krishna Sharma
+ - Mahika Juneja
+ - Ayan Bansal
+
 ## Introduction
 <p align="justify">
 When we first talk of local governance the first word that comes to our minds is Panchayat. But the harsh reality is that the Panchayats have expanded theoretically more or less in a negative way in today's time. In the appeal to look mordern they have diregarded the grievances of the local public and have often become a political gimmick. When given the opportunity to use tech judiciously we aim at providing the grassroot level a vivid easy to use website that will become a one stop shop for all the social and local issues. 
@@ -40,3 +48,5 @@ Our project Sushasan Samvad proposes to solve the problem of local governance by
 | **Advertising & Sponsorships** | <p align="justify">We will allow targeted advertising on the website from local businesses, service providers, and relevant organizations interested in reaching the rural audience.</p>                                                                                                                                                                                                                                          |
 | **Data Analytics Services**    | <p align="justify">In the future, we will aggregate and anonymize data collected from user interactions, grievances, and community engagement. Offer valuable insights and analytics to local governments, NGOs, and researchers interested in understanding community needs and trends. Charge for customized reports and data access.</p>                                                                                       |
 | **Grants & Funding**           | <p align="justify">We will seek grants and funding from government agencies, philanthropic organizations, and development-focused foundations that support initiatives promoting transparency, citizen engagement, and local governance.</p>                                                                                                                                                                                      |
+
+*Created in a span of 12 hours by 5 sleep-deprived teenagers.*
