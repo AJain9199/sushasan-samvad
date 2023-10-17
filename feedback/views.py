@@ -1,20 +1,23 @@
+import random
 from threading import Thread
-
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm
-from .models import Meeting, MeetingSuggestion, District, Village, Grievance, ScheduleMeeting
+from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm
+from .models import Meeting, MeetingSuggestion, District, Village, Grievance, ScheduleMeeting, User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.contrib.auth.models import Group
+from django.contrib import messages
 
 
 VILLAGER = 2
 VILLAGE_ADMIN = 1
 DISTRICT_ADMIN = 3
 
+
+user_codes = [i for i in range(0, 99999)]
 
 def is_role(user, role):
     return user.groups.filter(id=role).exists()
@@ -38,6 +41,14 @@ def register(request):
         if form.errors:
             return render(request, 'register.html', {'form': form})
         user = form.save()
+
+        idx = random.randint(0, len(user_codes))
+        user.user_code = user_codes[idx]
+        user_codes.pop(idx)
+        user.save()
+
+        messages.success(request, f"Your user code is {user.user_code}. Please remember it for logging in later.")
+
         user.save()
         login(request, user)
         if is_role(user, DISTRICT_ADMIN):
@@ -158,3 +169,20 @@ def scheduled_meeting(request):
             meets[meeting.id] = f"{meeting.date.day}/{meeting.date.month}/{meeting.date.year}"
 
         return JsonResponse(meets)
+
+
+def login_view(request):
+    if request.method == 'GET':
+        form = LoginForm()
+        return render(request, "login.html", {"form": form})
+    elif request.method == 'POST':
+        form = LoginForm(request.POST)
+        usr = User.objects.get(user_code=form['user_code'].value())
+        login(request, usr)
+        return HttpResponseRedirect(reverse('village', args=(request.user.village.id, )))
+
+
+@login_required()
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('login'))

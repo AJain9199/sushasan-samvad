@@ -1,5 +1,7 @@
+import random
+
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting
 from django import forms
 from django.utils.translation import gettext as _
@@ -16,6 +18,7 @@ class RegistrationForm(ModelForm):
 
     def save(self, commit=True):
         user = super().save()
+
         Group.objects.get(id=self.cleaned_data['role']).user_set.add(user)
         return user
 
@@ -50,3 +53,7 @@ class ScheduleMeetingForm(ModelForm):
     class Meta:
         model = ScheduleMeeting
         fields = ('date',)
+
+
+class LoginForm(Form):
+    user_code = forms.IntegerField()
