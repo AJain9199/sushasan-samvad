@@ -4,27 +4,29 @@
 
 {% load widget_tweaks %}
 {% block body %}
-    <h1 class="_heading" style="font-size: 68px;">Register</h1>
-    <form style="width: 25%; margin-left: 590px;" method="post">
-    {% csrf_token %}
-    {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-    {% endfor %}
-    {% for field in form.visible_fields %}
-      <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
-        <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field|add_class:'form-control' }}
-        {% for error in field.errors %}
-          <span class="help-block">{{ error }}</span>
-        {% endfor %}
-      </div>
-    {% endfor %}
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-ok"></span> Register
-      </button>
+    <div class="d-flex flex-column justify-content-center w-100 align-items-center">
+        <h1 class="_heading" style="font-size: 68px;">Register</h1>
+        <form style="width: 25%;" method="post" class="d-flex flex-column justify-content-center">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                    <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    {% for error in field.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="form-group d-flex flex-row align-items-center justify-content-center">
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-ok"></span> Register
+                </button>
+            </div>
+        </form>
     </div>
-    </form>
 
     <script>
         role = document.getElementById("id_role");
@@ -34,6 +36,7 @@
         VILLAGER = 2
         VILLAGE_ADMIN = 1
         DISTRICT_ADMIN = 3
+
         function hide_dept() {
             if (role.value == VILLAGER || role.value == VILLAGE_ADMIN) {
                 dept.style.display = 'none';
@@ -47,6 +50,7 @@
                 village.style.display = 'block';
             }
         }
+
         window.onload = hide_dept;
         role.addEventListener("change", hide_dept);
     </script>
