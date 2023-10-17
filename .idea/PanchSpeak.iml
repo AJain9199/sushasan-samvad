@@ -23,6 +23,8 @@
     <orderEntry type="library" name="video-js" level="application" />
     <orderEntry type="library" name="video" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="video-js" level="application" />
+    <orderEntry type="library" name="videojs.record" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

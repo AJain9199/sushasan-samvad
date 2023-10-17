@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Share your grievance{% endblock %}
 {% block add_head %}
     <link href="https://vjs.zencdn.net/8.6.0/video-js.css" rel="stylesheet"/>
@@ -20,61 +21,7 @@
 
     <script src="{% static 'audioRecorder.js' %}"></script>
     <script>
-<<<<<<< HEAD
-        const recButton = document.getElementById("rec");
-        const subButton = document.getElementById("sub");
-        let output = document.getElementById('audioPlayer');
-        output.hidden = true;
-        let audioRecorder;
-        let formData = new FormData();
-        let started = false;
-        let submit = document.getElementById('sub')
-
-        navigator.mediaDevices.getUserMedia({audio: true})
-            .then(stream => {
-
-                // Initialize the media recorder object
-                audioRecorder = new MediaRecorder(stream);
-
-                // dataavailable event is fired when the recording is stopped
-                audioRecorder.addEventListener('dataavailable', e => {
-                    formData.set("audio", e.data, "audio.webm");
-                    output.src = URL.createObjectURL(e.data);
-                });
-
-                // start recording when the start button is clicked
-                recButton.addEventListener('click', () => {
-                    if (started) {
-                        audioRecorder.stop();
-                        recButton.innerHTML = 'Start Recording <a style="font-size: 25px;">🎙️</a>';
-                        output.hidden = false;
-
-                    } else {
-                        audioRecorder.start();
-                        recButton.innerHTML = 'Stop Recording <a style="font-size: 25px;">🎙️</a>';
-                        output.hidden = true;
-                    }
-                    started = !started;
-                });
-
-                // play the recorded audio when the play button is clicked
-                subButton.addEventListener('click', () => {
-                    $.ajax({
-                        method: 'POST',
-                        processData: false,
-                        mimeType: 'multipart/form-data',
-                        contentType: false,
-                        data: formData,
-                        async: false,
-                        success: (data, textStatus) => {
-                            window.location = (JSON.parse(data)).url;
-                        }
-                    });
-                });
-            });
-=======
         recordAudio();
->>>>>>> 715bf83736af23eff8ad79482b1c4d4a328ca740
     </script>
     </div>
 {% endblock %}
