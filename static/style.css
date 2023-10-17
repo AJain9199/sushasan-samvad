@@ -114,3 +114,11 @@ body {
   margin-left: 100px;
   margin-top: 120px;
 }
+
+@media screen and (max-width: 1447px){
+
+  form {
+    width: 70% !important;
+  }
+}
+
