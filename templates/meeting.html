@@ -6,43 +6,56 @@
     <!-- load script -->
     {% load widget_tweaks %}
     {% load feedbacktags %}
-    <video style="height: 500px;margin-left: 40px;margin-top: 40px;" src="{% get_media_prefix %}{{ meeting.recording }}" controls></video>
-    {% village_admin request.user as is_vil_admin %}
-    {% dist_admin request.user as is_dist_admin %}
-    {% if is_vil_admin or is_dist_admin %}
-        {% if suggestions %}
-            <h1 class="mb-4">Suggestions by villagers:</h1>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Suggestion by</th>
-                    <th scope="col">Audio file</th>
-                </tr>
-                </thead>
-                {% for suggestion in suggestions %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ suggestion.made_by.name }}</td>
-                        <td>
-                            <audio src="{% get_media_prefix %}{{ suggestion.audio }}" controls></audio>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <h1>No suggestions have been shared for this meeting.</h1>
-        {% endif %}
-    {% else %}
-        <h1 style="margin-top: 50px; margin-left: 40px;">Share your suggestions for this meeting</h1>
-        <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls></audio>
+    <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="d-flex flex-column justify-content-center align-items-center full100">
+            <div class="strip d-flex flex-column justify-content-center align-items-center">
+                <h1>Meeting in {{ request.user.village }} on {{ meeting.date }}</h1>
 
-        <button type="button" class="btn btn-primary" id="rec">Start Recording</button>
-        <button type="button" class="btn btn-primary" id="sub">Submit</button>
-
-        <script src="{% static 'audioRecorder.js' %}"></script>
-        <script>
-            recordAudio();
-        </script>
-    {% endif %}
+                <video style="max-width: 100%"
+                       src="{% get_media_prefix %}{{ meeting.recording }}" controls></video>
+                {% village_admin request.user as is_vil_admin %}
+                {% dist_admin request.user as is_dist_admin %}
+                {% if is_vil_admin or is_dist_admin %}
+                    {% if suggestions %}
+                        <h1 class="mb-4">Suggestions by villagers:</h1>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Suggestion by</th>
+                                <th scope="col">Audio file</th>
+                            </tr>
+                            </thead>
+                            {% for suggestion in suggestions %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ suggestion.made_by.name }}</td>
+                                    <td>
+                                        <audio src="{% get_media_prefix %}{{ suggestion.audio }}" controls></audio>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <h1>No suggestions have been shared for this meeting.</h1>
+                    {% endif %}
+                {% else %}
+                    <h1 style="margin-top: 50px; margin-left: 40px;">Share your suggestions for this meeting</h1>
+                    <div class="d-flex flex-column justify-content-center align-items-center">
+                        <audio class="m-2" id="audioPlayer" controls></audio>
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <button type="button" class="btn btn-primary mx-3" id="rec"><a style="font-size: 25px;">Start
+                                Recording🎙️</a></button>
+                            <button type="button" class="btn btn-primary mx-3" id="sub"><a style="font-size: 25px;">Submit</a>
+                            </button>
+                        </div>
+                    </div>
+                    <script src="{% static 'audioRecorder.js' %}"></script>
+                    <script>
+                        recordAudio();
+                    </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

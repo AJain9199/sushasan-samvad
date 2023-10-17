@@ -7,21 +7,25 @@
 {% endblock %}
 {% block body %}
     {% load widget_tweaks %}
-<div class="mar">
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
 
-    <div style="margin-top: 50px;margin-bottom: 50px;">
-        <h1 class="_heading" style="font-size: 68px; margin-top: 40px; margin-bottom: 50px;"><b>Shikayat Forum</b></h1>
-        <h4>Directly record your shikayat and get it registered on the Shikayat forum</h4>
-        <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls>
-        </audio>
-        <br>
-        <button type="button" class="btn btn-primary" id="rec">Start Recording<a style="font-size: 25px;">🎙️</a></button>
-        <button type="button" class="btn btn-success" id="sub"><a style="font-size: 25px;">Submit</a></button>
-    </div>
+        <div style="margin-top: 50px;margin-bottom: 50px;">
+            <h1 class="_heading" style="font-size: 68px; margin-top: 40px; margin-bottom: 50px;"><b>Shikayat Forum</b>
+            </h1>
+            <h4>Directly record your shikayat and get it registered on the Shikayat forum</h4>
+            <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls>
+            </audio>
+            <br>
+            <div class="d-flex flex-row justify-content-center align-items-center">
+                <button type="button" class="btn btn-primary me-2" id="rec"><a style="font-size: 25px;">Start Recording🎙️</a>
+                </button>
+                <button type="button" class="btn btn-success" id="sub"><a style="font-size: 25px;">Submit</a></button>
+            </div>
+        </div>
 
-    <script src="{% static 'audioRecorder.js' %}"></script>
-    <script>
-        recordAudio();
-    </script>
+        <script src="{% static 'audioRecorder.js' %}"></script>
+        <script>
+            recordAudio();
+        </script>
     </div>
 {% endblock %}

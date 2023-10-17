@@ -19,6 +19,7 @@ DISTRICT_ADMIN = 3
 
 user_codes = [i for i in range(0, 99999)]
 
+
 def is_role(user, role):
     return user.groups.filter(id=role).exists()
 

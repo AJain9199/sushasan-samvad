@@ -3,19 +3,21 @@
 {% block title %}District {{ district.name }}{% endblock %}
 
 {% block body %}
-    <h1>Villages in District {{ district.name }}</h1>
-    <table class="table">
-        <thead>
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <h1 class="m-3">Villages in District {{ district.name }}</h1>
+        <table class="table w-75 m-3">
+            <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Village</th>
             </tr>
-        </thead>
-        {% for village in villages %}
-            <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td><a href="{% url 'village' village.id %}">{{ village.name }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+            </thead>
+            {% for village in villages %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'village' village.id %}">{{ village.name }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}
