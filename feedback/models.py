@@ -53,6 +53,7 @@ class User(AbstractUser):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
     village = models.ForeignKey(Village, on_delete=models.CASCADE, blank=True, null=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
+    user_code = models.BigIntegerField(null=True, blank=True)
 
     first_name = None
     last_name = None

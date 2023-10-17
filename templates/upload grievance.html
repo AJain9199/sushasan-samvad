@@ -12,14 +12,15 @@
         <h1 class="_heading" style="font-size: 68px; margin-top: 40px; margin-bottom: 50px;"><b>Shikayat Forum</b></h1>
         <h4>Directly record your shikayat and get it registered on the Shikayat forum</h4>
         <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls>
-            <source id="audio_src" type="audio/webm" src="">
         </audio>
         <br>
         <button type="button" class="btn btn-primary" id="rec">Start Recording<a style="font-size: 25px;">🎙️</a></button>
         <button type="button" class="btn btn-success" id="sub"><a style="font-size: 25px;">Submit</a></button>
     </div>
 
+    <script src="{% static 'audioRecorder.js' %}"></script>
     <script>
+<<<<<<< HEAD
         const recButton = document.getElementById("rec");
         const subButton = document.getElementById("sub");
         let output = document.getElementById('audioPlayer');
@@ -71,6 +72,9 @@
                     });
                 });
             });
+=======
+        recordAudio();
+>>>>>>> 715bf83736af23eff8ad79482b1c4d4a328ca740
     </script>
     </div>
 {% endblock %}

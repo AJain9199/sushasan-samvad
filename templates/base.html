@@ -40,10 +40,20 @@
                             <a class="nav-link active" aria-current="page" href="{% url 'index' %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      class="bi bi-house" viewBox="0 0 16 16">
-                                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
+                                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"></path>
                                 </svg>&nbsp;&nbsp;Home</a><!--home-->
                         </li>
+<<<<<<< HEAD
+=======
+                        <li class="nav-item">
+                            <a class="nav-link " href="{% url 'community' %}" aria-current="page">Community Connect</a>
+                        </li>
+>>>>>>> 715bf83736af23eff8ad79482b1c4d4a328ca740
                         {% if request.user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
+                            </li>
                             {% if dist_admim %}
                                 <li class="nav-item">
                                     <a class="nav-link"
@@ -90,6 +100,9 @@
                                        href="...">&nbsp;Logout</a>
                                 </li>
                             {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">&nbsp;Log out</a>
+                            </li>
                         {% else %}
                         <ul class="nav justify-content-end">
                             <li class="nav-item">
@@ -103,6 +116,12 @@
         </div>
     </div>
 </nav>
+
+{% for message in messages %}
+    <div class="alert {{ message.tags }} alert-dismissible shadow fade show" role="alert">
+        {{ message | safe }}
+    </div>
+{% endfor %}
 
 {% block body %}{% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
