@@ -6,15 +6,17 @@
 {% endblock %}
 {% block body %}
     {% load widget_tweaks %}
-    <div style="margin-top: 50px;margin-bottom: 50px;">
-        <h3> Record your grievance(s)</h3>
+<div class="mar">
 
+    <div style="margin-top: 50px;margin-bottom: 50px;">
+        <h1 class="_heading" style="font-size: 68px; margin-top: 40px; margin-bottom: 50px;"><b>Shikayat Forum</b></h1>
+        <h4>Directly record your shikayat and get it registered on the Shikayat forum</h4>
         <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls>
             <source id="audio_src" type="audio/webm" src="">
         </audio>
-
-        <button type="button" class="btn btn-primary" id="rec">Start Recording</button>
-        <button type="button" class="btn btn-primary" id="sub">Submit</button>
+        <br>
+        <button type="button" class="btn btn-primary" id="rec">Start Recording<a style="font-size: 25px;">🎙️</a></button>
+        <button type="button" class="btn btn-success" id="sub"><a style="font-size: 25px;">Submit</a></button>
     </div>
 
     <script>
@@ -25,6 +27,7 @@
         let audioRecorder;
         let formData = new FormData();
         let started = false;
+        let submit = document.getElementById('sub')
 
         navigator.mediaDevices.getUserMedia({audio: true})
             .then(stream => {
@@ -42,11 +45,12 @@
                 recButton.addEventListener('click', () => {
                     if (started) {
                         audioRecorder.stop();
-                        recButton.innerText = 'Start Recording';
+                        recButton.innerHTML = 'Start Recording <a style="font-size: 25px;">🎙️</a>';
                         output.hidden = false;
+
                     } else {
                         audioRecorder.start();
-                        recButton.innerText = 'Stop Recording';
+                        recButton.innerHTML = 'Stop Recording <a style="font-size: 25px;">🎙️</a>';
                         output.hidden = true;
                     }
                     started = !started;
@@ -68,4 +72,5 @@
                 });
             });
     </script>
+    </div>
 {% endblock %}

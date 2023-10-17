@@ -5,15 +5,19 @@
     {% load feedbacktags %}
 
     {% if grievances %}
-        <h1 class="_heading" style="font-size: 68px; margin-bottom: 50px;">Important agendas for {{ village.name }}</h1>
+        <h1 class="_heading" style="font-size: 68px; margin-top: 40px; margin-bottom: 50px;"><b>Important agendas for {{ village.name }}</b></h1>
         <table style="margin-left: 100px; width: 60%;" class="table">
             <thead>
             <tr>
-                <th class="tbla" scope="col">#</th>
-                <th class="tbla" scope="col">Made by</th>
-                <th class="tbla" scope="col">Date</th>
-                <th class="tbla" scope="col">Audio</th>
-                <th class="tbla" scope="col"></th>
+                <th class="tbla" scope="col">No.</th>
+                <th class="tbla" scope="col">Uploaded by</th>
+                <th class="tbla" scope="col">Uploaded on</th>
+                <th class="tbla" scope="col">Agenda</th>
+                {% village_admin request.user as vil_adm %}
+                {% if vil_adm %}
+                <th class="tbla" scope="col">Resolve</th>
+                {% endif %}
+                
             </tr>
             </thead>
             {% for grievance in grievances %}
