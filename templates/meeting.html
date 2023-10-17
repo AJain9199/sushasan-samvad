@@ -35,25 +35,14 @@
         {% endif %}
     {% else %}
         <h1 style="margin-top: 50px; margin-left: 40px;">Share your suggestions for this meeting</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-            {% for field in form.visible_fields %}
-                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:'form-control' }}
-                    {% for error in field.errors %}
-                        <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-ok"></span> Save
-                </button>
-            </div>
-        </form>
+        <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls></audio>
+
+        <button type="button" class="btn btn-primary" id="rec">Start Recording</button>
+        <button type="button" class="btn btn-primary" id="sub">Submit</button>
+
+        <script src="{% static 'audioRecorder.js' %}"></script>
+        <script>
+            recordAudio();
+        </script>
     {% endif %}
 {% endblock %}

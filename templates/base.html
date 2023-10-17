@@ -44,10 +44,13 @@
                                 </svg>&nbsp;&nbsp;Home</a><!--home-->
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                               href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
+                            <a class="nav-link " href="{% url 'community' %}" aria-current="page">Community Connect</a>
                         </li>
                         {% if request.user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
+                            </li>
                             {% if dist_admim %}
                                 <li class="nav-item">
                                     <a class="nav-link"
@@ -71,15 +74,14 @@
                                         grievance</a>
                                 </li>
                             {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">&nbsp;Log out</a>
+                            </li>
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'register' %}">&nbsp;Register</a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link " href="{% url 'community' %}" aria-current="page">Community Connect</a>
-                            <!--home-->
-                        </li>
                     </ul>
                 </li>
             </ul>

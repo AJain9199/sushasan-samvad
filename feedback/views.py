@@ -75,6 +75,7 @@ def upload_meeting(request):
         return HttpResponseRedirect(reverse('meeting', args=(meeting.id, )))
 
 
+@csrf_exempt
 def meeting(request, meeting_id):
     if request.method == 'GET':
         m = Meeting.objects.get(id=meeting_id)
@@ -87,13 +88,11 @@ def meeting(request, meeting_id):
             return render(request, 'meeting.html', {'meeting': m, 'form': form})
     elif request.method == 'POST':
         form = SuggestionForm(request.POST, request.FILES)
-        if not form.is_valid():
-            return render(request, 'meeting.html', {'meeting': Meeting.objects.get(id=meeting_id), 'form': form})
         suggestion = form.save(commit=False)
         suggestion.meeting = Meeting.objects.get(id=meeting_id)
         suggestion.made_by = request.user
         suggestion.save()
-        return HttpResponseRedirect(reverse('village', args=(request.user.village.id,)))
+        return JsonResponse({"url": reverse('village', args=(request.user.village.id,))})
 
 
 @user_passes_test(is_district_admin)

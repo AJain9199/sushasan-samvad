@@ -10,62 +10,14 @@
         <h3> Record your grievance(s)</h3>
 
         <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls>
-            <source id="audio_src" type="audio/webm" src="">
         </audio>
 
         <button type="button" class="btn btn-primary" id="rec">Start Recording</button>
         <button type="button" class="btn btn-primary" id="sub">Submit</button>
     </div>
 
+    <script src="{% static 'audioRecorder.js' %}"></script>
     <script>
-        const recButton = document.getElementById("rec");
-        const subButton = document.getElementById("sub");
-        let output = document.getElementById('audioPlayer');
-        output.hidden = true;
-        let audioRecorder;
-        let formData = new FormData();
-        let started = false;
-
-        navigator.mediaDevices.getUserMedia({audio: true})
-            .then(stream => {
-
-                // Initialize the media recorder object
-                audioRecorder = new MediaRecorder(stream);
-
-                // dataavailable event is fired when the recording is stopped
-                audioRecorder.addEventListener('dataavailable', e => {
-                    formData.set("audio", e.data, "audio.webm");
-                    output.src = URL.createObjectURL(e.data);
-                });
-
-                // start recording when the start button is clicked
-                recButton.addEventListener('click', () => {
-                    if (started) {
-                        audioRecorder.stop();
-                        recButton.innerText = 'Start Recording';
-                        output.hidden = false;
-                    } else {
-                        audioRecorder.start();
-                        recButton.innerText = 'Stop Recording';
-                        output.hidden = true;
-                    }
-                    started = !started;
-                });
-
-                // play the recorded audio when the play button is clicked
-                subButton.addEventListener('click', () => {
-                    $.ajax({
-                        method: 'POST',
-                        processData: false,
-                        mimeType: 'multipart/form-data',
-                        contentType: false,
-                        data: formData,
-                        async: false,
-                        success: (data, textStatus) => {
-                            window.location = (JSON.parse(data)).url;
-                        }
-                    });
-                });
-            });
+        recordAudio();
     </script>
 {% endblock %}
