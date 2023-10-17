@@ -79,7 +79,7 @@ def validate_video(value):
 def validate_audio(value):
     import os
     ext = os.path.splitext(value.name)[1]
-    valid_extensions = ['.mp3', '.wav']
+    valid_extensions = ['.mp3', '.wav', '.webm']
     if ext not in valid_extensions:
         raise ValidationError(u'File not supported!')
 

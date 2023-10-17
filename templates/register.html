@@ -5,7 +5,7 @@
 {% load widget_tweaks %}
 {% block body %}
     <h1 class="_heading" style="font-size: 68px;">Register</h1>
-    <form style="width: 25%; margin-left: 734px;" method="post">
+    <form style="width: 25%; margin-left: 590px;" method="post">
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
       {{ hidden }}

@@ -7,7 +7,10 @@
     <title>{% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link href="{% static 'style.css' %}" rel="stylesheet">
+    {% block add_head %}
+    {% endblock %}
 </head>
 <body>
 <!-- jsCalendar v1.4.4 Javascript and CSS from unpkg cdn -->
@@ -60,12 +63,16 @@
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link"
-                                   href="{% url 'village' request.user.village.id %}">&nbsp;District</a>
+                                   href="{% url 'village' request.user.village.id %}">&nbsp;Village</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'share_grievance' %}">&nbsp;Share your grievance</a>
                             </li>
                         {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">&nbsp;Register</a>
+                        </li>
                     {% endif %}
                        <li class="nav-item">
                             <a class="nav-link " href="{% url 'community' %}" aria-current="page">Community Connect</a><!--home-->
