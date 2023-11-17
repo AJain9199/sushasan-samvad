@@ -17,12 +17,21 @@ body {
     color: #f1f1f1;
     width: 20%;
     padding: 20px 20px;
-    margin-left: 750px;
     border-radius: 8px;
 }
 
 .mar {
     padding: 26px 20px;
+}
+
+@media (min-width: 576px) {
+    .form-group {
+        width: 90% !important;
+    }
+
+    .form {
+        width: 90% !important;
+    }
 }
 
 .strip {

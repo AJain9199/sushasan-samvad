@@ -24,7 +24,7 @@ class RegistrationForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('name', 'state', 'district', 'village', 'department')
+        fields = ('name', 'state', 'district', 'sub_district', 'village', 'department')
 
 
 class UploadMeetingForm(ModelForm):

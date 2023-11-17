@@ -5,9 +5,10 @@
 {% load widget_tweaks %}
 {% block body %}
     <div class="d-flex flex-column justify-content-center w-100 align-items-center">
-        <h1 class="_heading" style="font-size: 68px;">Register</h1>
-        <form style="width: 25%;" method="post" class="d-flex flex-column justify-content-center">
+        <h1 style="font-size: 7vh">Register</h1>
+        <form method="post" class="form d-flex flex-column justify-content-center">
             {% csrf_token %}
+            {{ form.media.js }}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
@@ -28,30 +29,40 @@
         </form>
     </div>
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        role = document.getElementById("id_role");
-        dept = document.getElementById("div_id_department");
-        village = document.getElementById("div_id_village")
+        role = $("#id_role");
+        dept = $("#div_id_department");
+        village = $("#div_id_village");
 
         VILLAGER = 2
         VILLAGE_ADMIN = 1
         DISTRICT_ADMIN = 3
 
         function hide_dept() {
-            if (role.value == VILLAGER || role.value == VILLAGE_ADMIN) {
-                dept.style.display = 'none';
+            console.log(role.val());
+            if (role.val() == VILLAGER || role.val() == VILLAGE_ADMIN) {
+                dept.hide();
             } else {
-                dept.style.display = 'block';
+                dept.show();
             }
 
-            if (role.value == DISTRICT_ADMIN) {
-                village.style.display = 'none';
+            if (role.val() == DISTRICT_ADMIN) {
+                village.hide();
             } else {
-                village.style.display = 'block';
+                village.show();
             }
         }
 
-        window.onload = hide_dept;
-        role.addEventListener("change", hide_dept);
+        $(document).ready(() => {
+            hide_dept();
+            $('#id_state').select2();
+            $('#id_district').select2();
+            $('#id_sub_district').select2();
+            $('#id_village').select2();
+        });
+
+        role.change(hide_dept);
     </script>
 {% endblock %}

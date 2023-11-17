@@ -1,10 +1,13 @@
 import datetime
-from django.core.exceptions import ValidationError
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext as _
+
+import django.utils.timezone
 import moviepy.editor as mp
 import speech_recognition as sr
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.translation import gettext as _
+from smart_selects.db_fields import ChainedForeignKey
 
 
 def get_transcript(filepath, recording_name):
@@ -32,8 +35,16 @@ class District(models.Model):
         return self.name
 
 
-class Village(models.Model):
+class SubDistrict(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE)
+    name = models.CharField(_("Sub-District name"), max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
+class Village(models.Model):
+    sub_district = models.ForeignKey(SubDistrict, on_delete=models.CASCADE)
     name = models.CharField(_('Village name'), max_length=200)
 
     def __str__(self):
@@ -50,8 +61,35 @@ class Department(models.Model):
 class User(AbstractUser):
     name = models.CharField(_('Your name'), max_length=200, unique=True)
     state = models.ForeignKey(State, on_delete=models.CASCADE)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
-    village = models.ForeignKey(Village, on_delete=models.CASCADE, blank=True, null=True)
+
+    district = ChainedForeignKey(District,
+                                 chained_field="state",
+                                 chained_model_field="state",
+                                 show_all=False,
+                                 auto_choose=True,
+                                 sort=True,
+                                 on_delete=models.CASCADE
+                                 )
+
+    sub_district = ChainedForeignKey(SubDistrict,
+                                     chained_field="district",
+                                     chained_model_field="district",
+                                     show_all=False,
+                                     auto_choose=True,
+                                     sort=True,
+                                     on_delete=models.CASCADE
+                                     )
+
+    village = ChainedForeignKey(
+        Village,
+        chained_field="sub_district",
+        chained_model_field="sub_district",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
+        on_delete=models.CASCADE, blank=True, null=True
+    )
+
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
     user_code = models.BigIntegerField(null=True, blank=True)
 
@@ -99,7 +137,7 @@ class MeetingSuggestion(models.Model):
 
 class Grievance(models.Model):
     audio = models.FileField(_("Grievance"), upload_to="grievances", validators=[validate_audio])
-    date = models.DateField(default=datetime.datetime.now().date())
+    date = models.DateField(default=django.utils.timezone.now)
     made_by = models.ForeignKey(User, on_delete=models.CASCADE)
     important = models.BooleanField(default=False)
 
