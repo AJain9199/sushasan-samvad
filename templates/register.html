@@ -4,9 +4,28 @@
 
 {% load widget_tweaks %}
 {% block body %}
+
+    <style>
+        @media only screen and (max-width: 1080px) {
+            #wow{
+                font-size: 9rem;
+            }
+            .formx{
+                font-size: 4rem;
+            }
+            .form-control, .selection{
+                font-size: 2rem;
+                height: 50px;
+            }
+            .btn-primary{
+                font-size: 60px;
+            }
+        }
+    </style>
+
     <div class="d-flex flex-column justify-content-center w-100 align-items-center">
-        <h1 style="font-size: 7vh">Register</h1>
-        <form method="post" class="form d-flex flex-column justify-content-center">
+        <h1 id="wow">Register</h1>
+        <form method="post" class="form formx d-flex flex-column justify-content-center">
             {% csrf_token %}
             {{ form.media.js }}
             {% for hidden in form.hidden_fields %}
