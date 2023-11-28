@@ -41,13 +41,6 @@ def add_departments(apps, schema_editor):
         Department.objects.create(name=department)
 
 
-def add_groups(apps, schema_editor):
-    Group = apps.get_model("auth", "Group")
-
-    Group.objects.create("Village Admin")
-    Group.objects.create("Villager")
-    Group.objects.create("District Admin")
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -57,5 +50,4 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(add_location_data),
         migrations.RunPython(add_departments),
-        migrations.RunPython(add_groups),
     ]

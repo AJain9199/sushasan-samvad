@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block body %}
     <div class="grid">
         <div class="content1 g-col-6"><!--para1-->
@@ -29,7 +30,7 @@
                 </div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="/Carousel%20Images/img1.jpg" style="border-radius: 20px;" class="d-block w-100"
+                        <img src="{% static 'img1.jpg' %}" style="border-radius: 20px;" class="d-block w-100"
                              alt="Village panchayat">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>A scene from "Gram Panchayat"</h5>
@@ -37,14 +38,14 @@
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="/Carousel%20Images/img22.jpg" class="d-block w-100" alt="village" style="border-radius: 20px;">
+                        <img src="{% static 'img22.jpg' %}" class="d-block w-100" alt="village" style="border-radius: 20px;">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>A scene from a village in Uttrakhand</h5>
                             <p>Munsiaryi/Uttrakhand</p>
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img style="border-radius: 20px;" src="/Carousel%20Images/img32.jpg" class="d-block w-100"
+                        <img style="border-radius: 20px;" src="{% static 'img32.jpg' %}" class="d-block w-100"
                              alt="panchayti raj">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>Panchayati Raj</h5>
