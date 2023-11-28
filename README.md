@@ -8,7 +8,7 @@
  - Python
  - HTML
  - CSS
- - JavaScript
+ - JavaScript  
  - SQLite
 ### Frameworks
  - Django (Python)
