@@ -19,3 +19,7 @@ tqdm==4.66.1
 tzdata==2023.3
 urllib3==2.0.4
 django-smart-selects
+psycopg2
+boto3
+django-storages
+python-dotenv
