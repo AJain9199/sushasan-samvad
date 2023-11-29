@@ -9,6 +9,15 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-image: url("{% static 'background3.png' %}");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
     <link href="{% static 'style.css' %}" rel="stylesheet">
     {% block add_head %}
     {% endblock %}
@@ -25,7 +34,7 @@
 {% village_admin request.user as vil_admin %}
 <nav class="navbar navbar-expand-lg bg-light-subtle">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="प्रॉजेक्ट सुशासन संवाद" width="240"
+        <a class="navbar-brand" href="#"><img src="{% static 'logo.png' %}" alt="प्रॉजेक्ट सुशासन संवाद" width="240"
                                               height="90"><!--logo-->
         </a>&nbsp;&nbsp;&nbsp;&nbsp;
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

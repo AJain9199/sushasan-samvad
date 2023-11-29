@@ -1,12 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@500&display=swap');
 
-body {
-    background-image: url('/static/background3.png');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
-    font-family: 'Open Sans', sans-serif;
-}
 
 .pape {
     height: 630px;

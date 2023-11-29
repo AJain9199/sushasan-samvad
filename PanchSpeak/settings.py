@@ -142,7 +142,10 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+MEDIA_URL = 'https://%s/media/' % AWS_S3_CUSTOM_DOMAIN
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+DEFAULT_FILE_STORAGE = 'PanchSpeak.storage_backends.MediaStorage'
 
 
 # Default primary key field type
@@ -150,8 +153,6 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'feedback.User'
-MEDIA_ROOT = 'media/'
-MEDIA_URL = 'media/'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
