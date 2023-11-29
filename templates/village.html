@@ -7,6 +7,9 @@
     {% load static %}
     {% load feedbacktags %}
     {% village_admin request.user as is_village_admin %}
+
+    
+
     <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4">
         <h1>Scheduled meetings for <b>{{ village.name }}</b></h1>
         <h3><a style="text-decoration:underline;">{{ num_meetings }}</a> Upcoming meeting(s)</h3>

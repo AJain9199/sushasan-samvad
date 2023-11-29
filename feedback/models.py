@@ -1,23 +1,11 @@
 import datetime
 
 import django.utils.timezone
-import moviepy.editor as mp
-import speech_recognition as sr
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext as _
 from smart_selects.db_fields import ChainedForeignKey
-
-
-def get_transcript(filepath, recording_name):
-    vid = mp.VideoFileClip(filepath)
-    vid.audio.write_audiofile(f"{recording_name}_audio.wav")
-    r = sr.Recognizer()
-    with sr.AudioFile(f"{recording_name}_audio.wav") as source:
-        data = r.record(source)
-        text = r.recognize_google(data, language="hi-In")
-    return text.encode('utf-8')
 
 
 class State(models.Model):
