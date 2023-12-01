@@ -76,6 +76,10 @@
                             {% else %}
                                 <li class="nav-item">
                                     <a class="nav-link"
+                                    href="{% url 'village' request.user.village.id %}">&nbsp;Village</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
                                        href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
                                 </li>
                                 <li class="nav-item">
