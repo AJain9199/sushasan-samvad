@@ -1,4 +1,4 @@
-function recordAudio(submit_callback) {
+function recordAudio() {
 
     const recButton = document.getElementById("rec");
     const output = document.getElementById("audioPlayer");
@@ -37,7 +37,6 @@ function recordAudio(submit_callback) {
 
             // play the recorded audio when the play button is clicked
             subButton.addEventListener('click', () => {
-		submit_callback();
                 $.ajax({
                     method: 'POST',
                     processData: false,
