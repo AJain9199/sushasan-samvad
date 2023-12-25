@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="postgres@db.mcclidizptcrxkdyowsg.supabase.co" uuid="01eab310-799e-44e1-a77f-3c5fbfa2e360">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://db.mcclidizptcrxkdyowsg.supabase.co:5432/postgres</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
