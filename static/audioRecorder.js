@@ -25,11 +25,11 @@ function recordAudio(submit_callback) {
             recButton.addEventListener('click', () => {
                 if (started) {
                     audioRecorder.stop();
-                    recButton.innerHTML = `<a style="font-size: 25px;">Start RecordingðŸŽ™ï¸</a>`;
+                    recButton.innerHTML = `<a style="font-size: 25px;">Start Recording🎙️</a>`;
                     output.hidden = false;
                 } else {
                     audioRecorder.start();
-                    recButton.innerHTML = `<a style="font-size: 25px;">Stop Recording</a>`;
+                    recButton.innerHTML = `<a style="font-size: 25px;">Stop Recording🎙️</a>`;
                     output.hidden = true;
                 }
                 started = !started;
