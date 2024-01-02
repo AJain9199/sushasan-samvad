@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="db.sqlite3" uuid="af58400d-94a1-4d75-889c-6e4256b6c20a">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:db.sqlite3</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="postgres@db.mcclidizptcrxkdyowsg.supabase.co" uuid="01eab310-799e-44e1-a77f-3c5fbfa2e360">
+    <data-source source="LOCAL" name="daeu2mhjh69rq@ec2-54-73-22-169.eu-west-1.compute.amazonaws.com" uuid="81fa869b-7bf5-442d-84bc-0b36ba564f3e">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://db.mcclidizptcrxkdyowsg.supabase.co:5432/postgres</jdbc-url>
+      <jdbc-url>jdbc:postgresql://ec2-54-73-22-169.eu-west-1.compute.amazonaws.com:5432/daeu2mhjh69rq</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="db.sqlite3" uuid="61921872-0fb8-4e91-aab3-123b1e0d01ff">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
