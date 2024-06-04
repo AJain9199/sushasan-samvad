@@ -4,311 +4,135 @@
 {% block title %}Make a Loan Request{% endblock %}
 
 {% load widget_tweaks %}
+
 {% block body %}
 <style>
+    /* Glassmorphism Effect */
+    body {
+        background-size: cover;
+        font-family: Arial, sans-serif;
+
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+        backdrop-filter: blur(10px); /* Glass effect with blur */
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .form-control,
+    .btn-primary {
+        border-radius: 8px;
+    }
+
+    .formx {
+        font-size: 1.5rem;
+    }
+
+    /* Responsiveness */
     @media only screen and (max-width: 1080px) {
         #wow {
-            font-size: 9rem;
+            font-size: 6rem;
         }
 
         .formx {
-            font-size: 4rem;
+            font-size: 3rem;
         }
 
         .form-control,
         .selection {
-            font-size: 2rem;
+            font-size: 1.5rem;
             height: 50px;
         }
 
         .btn-primary {
-            font-size: 60px;
+            font-size: 2rem;
         }
     }
 </style>
 
 <div class="d-flex flex-column justify-content-center w-100 align-items-center">
-    <h1 id="wow">Make a Loan Request</h1>
-    <h4>To the {{ shg.name }}</h4>
-    <form method="post" class="form w-100 formx d-flex flex-column justify-content-center align-items-center my-3">
-        {% csrf_token %}
-        {{ shg_form.media.js }}
-        {% for hidden in shg_form.hidden_fields %}
-        {{ hidden }}
-        {% endfor %}
-
-        <div class="row g-3 form-group">
-            <div class="col-md-6">
-                <div class="mb-3" id="div_{{ shg_form.principal.id_for_label }}">
-                    <label style="text-align: center" for="{{ field.principal.id_for_label }}">{{ shg_form.principal.label }}</label>
-                    <div class="d-flex flex-row align-items-center">
-                        <span class="me-2"><strong>Rs. </strong></span>
-                        {{ shg_form.principal|add_class:'form-control' }}
+    <div class="glass">
+        <h1 id="wow" class="text-center text">Make a Loan Request</h1>
+        <h4 class="text-center text">To the {{ shg.name }}</h4>
+        <form method="post" class="form w-100 formx d-flex flex-column justify-content-center align-items-center my-3">
+            {% csrf_token %}
+            {{ shg_form.media.js }}
+            {% for hidden in shg_form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+        
+            <div class="row g-3 form-group">
+                <div class="col-md-6">
+                    <div class="mb-3" id="div_{{ shg_form.principal.id_for_label }}">
+                        <label class="text" for="{{ field.principal.id_for_label }}">{{ shg_form.principal.label }}</label>
+                        <div class="d-flex flex-row align-items-center">
+                            <span class="me-2 text"><strong>Rs. </strong></span>
+                            {{ shg_form.principal|add_class:'form-control' }}
+                        </div>
+                        {% for error in shg_form.principal.errors %}
+                        <span class="help-block text-danger">{{ error }}</span>
+                        {% endfor %}
                     </div>
-                    {% for error in shg_form.principal.errors %}
-                    <span class="help-block">{{ error }}</span>
-                    {% endfor %}
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3" id="div_{{ shg_form.interest_rate.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.interest_rate.id_for_label }}">{{ shg_form.interest_rate.label }}</label>
-
-                    <div class="d-flex flex-row align-items-center">
-                        {{ shg_form.interest_rate|add_class:'form-control' }}
-                        <span class="ms-2"><strong>%</strong></span>
+                <div class="col-md-6">
+                    <div class="mb-3" id="div_{{ shg_form.interest_rate.id_for_label }}">
+                        <label class="text" for="{{ shg_form.interest_rate.id_for_label }}">{{ shg_form.interest_rate.label }}</label>
+                        <div class="d-flex flex-row align-items-center">
+                            {{ shg_form.interest_rate|add_class:'form-control' }}
+                            <span class="ms-2 text"><strong>%</strong></span>
+                        </div>
+                        {% for error in shg_form.interest_rate.errors %}
+                        <span class="help-block text-danger">{{ error }}</span>
+                        {% endfor %}
                     </div>
-                    {% for error in shg_form.interest_rate.errors %}
-                    <span class="help-block">{{ error }}</span>
-                    {% endfor %}
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3" id="div_{{ shg_form.duration.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.duration.id_for_label }}">{{ shg_form.duration.label }}</label>
-                    {{ shg_form.duration|add_class:'form-control' }}
-
-                    {% for error in shg_form.duration.errors %}
-                    <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3" id="div_{{ shg_form.repayment_freq.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.repayment_freq.id_for_label }}">{{ shg_form.repayment_freq.label }}</label>
-                    {{ shg_form.repayment_freq|add_class:'form-control' }}
-                    {% for error in shg_form.repayment_freq.errors %}
-                    <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="mb-3" id="div_{{ shg_form.purpose.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.purpose.id_for_label }}">{{ shg_form.purpose.label }}</label>
-                    {{ shg_form.purpose|add_class:'form-control' }}
-                    {% for error in shg_form.purpose.errors %}
-                    <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group d-flex flex-column align-items-center justify-content-center">
-            <button class="btn btn-primary my-2" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" id="seeLoan"
-                onclick="fetchLoanData();">
-                See Draft Loan Details
-            </button>
-
-            <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-ok"></span> Send request for Approval
-            </button>
-        </div>
-    </form>
-</div>
-
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Loan Information</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div id="loanSummary" class="bg-light rounded p-3 mb-4">
-            <!-- Loading Spinner -->
-            <div id="summaryLoader" class="text-center py-5">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-
-            <!-- Summary Content -->
-            <div id="summaryContent">
-                <h5>Total Payable</h5>
-                <div id="totalPayable" class="fs-1 fw-bold text-primary mb-3">$0.00</div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="text-muted">Principal</div>
-                        <div id="principalAmount" class="fw-bold">$0.00</div>
+                <div class="col-md-6">
+                    <div class="mb-3" id="div_{{ shg_form.duration.id_for_label }}">
+                        <label class="text" for="{{ shg_form.duration.id_for_label }}">{{ shg_form.duration.label }}</label>
+                        {{ shg_form.duration|add_class:'form-control' }}
+                        {% for error in shg_form.duration.errors %}
+                        <span class="help-block text-danger">{{ error }}</span>
+                        {% endfor %}
                     </div>
-                    <div class="col-6">
-                        <div class="text-muted">Interest</div>
-                        <div id="interestAmount" class="fw-bold">$0.00</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3" id="div_{{ shg_form.repayment_freq.id_for_label }}">
+                        <label class="text" for="{{ shg_form.repayment_freq.id_for_label }}">{{ shg_form.repayment_freq.label }}</label>
+                        {{ shg_form.repayment_freq|add_class:'form-control' }}
+                        {% for error in shg_form.repayment_freq.errors %}
+                        <span class="help-block text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3" id="div_{{ shg_form.purpose.id_for_label }}">
+                        <label class="text" for="{{ shg_form.purpose.id_for_label }}">{{ shg_form.purpose.label }}</label>
+                        {{ shg_form.purpose|add_class:'form-control' }}
+                        {% for error in shg_form.purpose.errors %}
+                        <span class="help-block text-danger">{{ error }}</span>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="mb-3">
-            <h5>Amortization Schedule</h5>
-        </div>
-
-        <div class="table-container">
-            <div class="loading-spinner" id="scheduleLoader">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+        
+            <div class="form-group d-flex flex-column align-items-center justify-content-center">
+                <button class="btn btn-primary my-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" id="seeLoan" onclick="fetchLoanData();">
+                    See Draft Loan Details
+                </button>
+        
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-ok"></span> Send request for Approval
+                </button>
             </div>
-            <table class="table table-sm" id="amortizationTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Principal</th>
-                        <th>Interest</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="amortizationBody">
-                    <!-- Amortization data will be inserted here -->
-                </tbody>
-            </table>
-            <div id="noDataMessage" class="text-center py-4" style="display: none;">
-                <i class="fas fa-exclamation-circle text-muted mb-2" style="font-size: 2rem;"></i>
-                <p>No amortization data available</p>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
-<script>
-    // Elements
-    const summaryLoader = document.getElementById('summaryLoader');
-    const summaryContent = document.getElementById('summaryContent');
-    const scheduleLoader = document.getElementById('scheduleLoader');
-    const amortizationTable = document.getElementById('amortizationTable');
-    const amortizationBody = document.getElementById('amortizationBody');
-    const noDataMessage = document.getElementById('noDataMessage');
-    const totalPayable = document.getElementById('totalPayable');
-    const principalAmount = document.getElementById('principalAmount');
-    const interestAmount = document.getElementById('interestAmount');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const showPaidInstallments = document.getElementById('showPaidInstallments');
-    const showBtn = document.getElementById('seeLoan');
-
-    // Format currency
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR'
-        }).format(amount);
-    };
-
-    function getFieldData(id) {
-        return document.getElementById(id).value;
-    }
-
-    function collectData() {
-        let data = new FormData();
-        data.append("principal", getFieldData("{{ shg_form.principal.id_for_label }}"));
-        data.append("interest_rate", getFieldData("{{ shg_form.interest_rate.id_for_label }}"));
-        data.append("duration", getFieldData("{{ shg_form.duration.id_for_label }}"));
-        data.append("repayment_freq", getFieldData("{{ shg_form.repayment_freq.id_for_label }}"));
-        return data;
-    }
-
-    // Fetch loan data from API
-    const fetchLoanData = async () => {
-        showLoaders();
-
-        try {
-            let send_data = collectData();
-            send_data.append("draft", true);
-            send_data.append("shg_id", {{ shg.id }});
-            send_data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
-
-            const response = await fetch("{% url 'loan_details' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: send_data
-            });
-
-            const data = await response.json();
-
-            updateSummary(data);
-            updateAmortizationSchedule(data.amortzn);
-
-        } catch (error) {
-            console.error('Error fetching loan data:', error);
-            showErrorMessage();
-        }
-    };
-
-    // Show loaders
-    const showLoaders = () => {
-        summaryLoader.style.display = 'flex';
-        summaryContent.style.display = 'none';
-        scheduleLoader.style.display = 'flex';
-        amortizationTable.style.display = 'none';
-        noDataMessage.style.display = 'none';
-    };
-
-    // Show error message
-    const showErrorMessage = () => {
-        summaryLoader.style.display = 'none';
-        summaryContent.style.display = 'block';
-        scheduleLoader.style.display = 'none';
-        noDataMessage.style.display = 'block';
-        amortizationTable.style.display = 'none';
-
-        totalPayable.textContent = 'Error loading data';
-        principalAmount.textContent = '-';
-        interestAmount.textContent = '-';
-        noDataMessage.querySelector('p').textContent = 'Failed to load amortization data. Please try again.';
-    };
-
-    // Update summary section
-    const updateSummary = (data) => {
-        summaryLoader.style.display = 'none';
-        summaryContent.style.display = 'block';
-
-        totalPayable.textContent = formatCurrency(data.total_payable);
-        let principal = parseFloat(getFieldData("{{ shg_form.principal.id_for_label }}"));
-        principalAmount.textContent = formatCurrency(principal);
-        interestAmount.textContent = formatCurrency(data.total_payable - principal);
-    };
-
-    // Update amortization schedule table
-    const updateAmortizationSchedule = (schedule) => {
-        scheduleLoader.style.display = 'none';
-
-        if (!schedule || schedule.length === 0) {
-            noDataMessage.style.display = 'block';
-            amortizationTable.style.display = 'none';
-            return;
-        }
-
-        amortizationTable.style.display = 'table';
-        amortizationBody.innerHTML = '';
-
-
-        let i = 1;
-        schedule.forEach(installment => {
-            const row = document.createElement('tr');
-            row.className = 'installment-row';
-
-            row.innerHTML = `
-                    <td>${i}</td>
-                    <td>${formatCurrency(installment[0])}</td>
-                    <td>${formatCurrency(installment[1])}</td>
-                    <td>${formatCurrency(installment[2])}</td>
-                `;
-
-            amortizationBody.appendChild(row);
-            i += 1;
-        });
-
-        if (amortizationBody.children.length === 0) {
-            noDataMessage.style.display = 'block';
-            amortizationTable.style.display = 'none';
-            noDataMessage.querySelector('p').textContent = 'No installments to display with current filter settings.';
-        }
-    };
-
-
-    refreshBtn.addEventListener('click', fetchLoanData);
-</script>
-
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 {% endblock %}

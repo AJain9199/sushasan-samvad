@@ -1,42 +1,109 @@
 {% extends 'base.html' %}
 {% block title %}
-SHGs in Your Village/District
+    SHGs in Your Village/District
 {% endblock %}
 {% block body %}
+<style>
+    .glass-container {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: 95%;
+        max-width: 1100px;
+    }
+
+    h1, h3 {
+        color: #2c2c2c;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .glass-table {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .glass-table th,
+    .glass-table td {
+        color: #1d1d1d;
+        background: transparent !important;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn-primary {
+        font-weight: 500;
+        padding: 10px 20px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .table a {
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .glass-container {
+            padding: 25px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+    }
+</style>
+
 <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-    <h1 class="m-3">SHGs in {{ request.user.village.name }}</h1>
-    {% if shgs %}
-    <div class="d-flex flex-row justify-content-end align-items-end w-75">
-        <a href="{% url 'create_shg' %}">
-            <button class="btn btn-primary">
-                Create your own
-            </button>
-        </a>
+    <div class="glass-container">
+        <h1 class="mb-4">SHGs in {{ request.user.village.name }}</h1>
+        {% if shgs %}
+        <div class="d-flex flex-row justify-content-end mb-3">
+            <a href="{% url 'create_shg' %}">
+                <button class="btn btn-primary">Create your own</button>
+            </a>
+        </div>
+        <div class="glass-table p-3">
+            <table class="table table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">SHG Name</th>
+                        <th scope="col">Minimum Contrib.</th>
+                        <th scope="col">Pool</th>
+                        <th scope="col">Members</th>
+                        <th scope="col">Founder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for shg in shgs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'shg' shg.id %}">{{ shg.name }}</a></td>
+                    <td>₹ {{ shg.min_contribution }}</td>
+                    <td>₹ {{ shg.pool }}</td>
+                    <td>{{ shg.members.count }}</td>
+                    <td>{{ shg.created_by.name }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <h3>No SHGs found in {{ request.user.village.name }}. 
+            <a href="{% url 'create_shg' %}">Create your own.</a>
+        </h3>
+        {% endif %}
     </div>
-    <table class="table w-75 m-3">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">SHG Name</th>
-                <th scope="col">Minimum Contrib.</th>
-                <th scope="col">Pool</th>
-                <th scope="col">Members</th>
-                <th scope="col">Founder</th>
-            </tr>
-        </thead>
-        {% for shg in shgs %}
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td><a href="{% url 'shg' shg.id %}">{{ shg.name }}</a></td>
-            <td>Rs. {{ shg.min_contribution }}</td>
-            <td>Rs. {{ shg.pool }}</td>
-            <td>{{ shg.members.count }}</td>
-            <td>{{ shg.created_by.name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <h3>No SHGs found in Dhanas. <a href="{% url 'create_shg' %}">Create your own.</a></h3>
-    {% endif %}
 </div>
 {% endblock %}

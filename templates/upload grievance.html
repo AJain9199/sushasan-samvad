@@ -4,28 +4,89 @@
 {% block add_head %}
     <link href="https://vjs.zencdn.net/8.6.0/video-js.css" rel="stylesheet"/>
     <link rel="stylesheet" href="//unpkg.com/videojs-record/dist/css/videojs.record.min.css">
+    <style>
+        .glass-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            margin-top: 60px;
+        }
+
+        ._heading {
+            font-size: 48px;
+            font-weight: 600;
+            text-align: center;
+            color: #333;
+        }
+
+        h4 {
+            font-size: 18px;
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .btn-custom {
+            font-size: 18px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .btn-custom a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 576px) {
+            ._heading {
+                font-size: 36px;
+            }
+
+            .btn-custom {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
 {% endblock %}
+
 {% block body %}
-    {% load widget_tweaks %}
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+{% load widget_tweaks %}
+<div class="w-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="glass-container text-center">
+        <h1 class="_heading"><b>Shikayat Forum</b></h1>
+        <h4>Directly record your shikayat and get it registered on the Shikayat forum</h4>
 
-        <div style="margin-top: 50px;margin-bottom: 50px;">
-            <h1 class="_heading" style="font-size: 68px; margin-top: 40px; margin-bottom: 50px;"><b>Shikayat Forum</b>
-            </h1>
-            <h4>Directly record your shikayat and get it registered on the Shikayat forum</h4>
-            <audio style="margin-right: 53px;margin-top: 59px;" id="audioPlayer" controls>
-            </audio>
-            <br>
-            <div class="d-flex flex-row justify-content-center align-items-center">
-                <button type="button" class="btn btn-primary me-2" id="rec"><a style="font-size: 25px;">Start Recording🎙️</a>
-                </button>
-                <button type="button" class="btn btn-success" id="sub"><a style="font-size: 25px;">Submit</a></button>
-            </div>
+        <audio id="audioPlayer" controls class="my-4"></audio>
+
+        <div class="d-flex flex-row justify-content-center align-items-center gap-3 mt-3 flex-wrap">
+            <button type="button" class="btn btn-primary btn-custom" id="rec">
+                <a>Start Recording 🎙️</a>
+            </button>
+            <button type="button" class="btn btn-success btn-custom" id="sub">
+                <a>Submit</a>
+            </button>
         </div>
-
-        <script type="text/javascript" src="{% static 'audioRecorder.js' %}"></script>
-        <script>
-            recordAudio();
-        </script>
     </div>
+</div>
+
+<script type="text/javascript" src="{% static 'audioRecorder.js' %}"></script>
+<script>
+    recordAudio();
+</script>
 {% endblock %}

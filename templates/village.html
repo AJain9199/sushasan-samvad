@@ -3,124 +3,178 @@
     Village {{ village.name }}
 {% endblock %}
 {% block body %}
-    {% load widget_tweaks %}
-    {% load static %}
-    {% load feedbacktags %}
-    {% village_admin request.user as is_village_admin %}
+{% load widget_tweaks %}
+{% load static %}
+{% load feedbacktags %}
+{% village_admin request.user as is_village_admin %}
 
-    
+<style>
+    .glass-box {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin: 20px auto;
+    }
 
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4">
-        <h1>Scheduled meetings for <b>{{ village.name }}</b></h1>
-        <h3><a style="text-decoration:underline;">{{ num_meetings }}</a> Upcoming meeting(s)</h3>
-        <div id="calendar" class="my-5"></div>
+    .section-title {
+        font-size: 24px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 25px;
+    }
+
+    .subtext {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .btn-custom {
+        width: 100%;
+        max-width: 300px;
+        height: 50px;
+        font-weight: 500;
+        border-radius: 10px;
+    }
+
+    #calendar {
+        width: 100%;
+        max-width: 700px;
+        margin: 40px auto;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        font-size: 14px;
+    }
+
+    .table th {
+        font-weight: 500;
+    }
+
+    .video-section {
+        max-width: 700px;
+        margin: 40px auto;
+    }
+</style>
+
+<div class="container">
+
+    <!-- Scheduled Meetings -->
+    <div class="text-center my-5">
+        <h2 class="section-title">Scheduled Meetings for <b>{{ village.name }}</b></h2>
+        <p class="subtext"><a class="text-decoration-underline">{{ num_meetings }}</a> Upcoming meeting(s)</p>
+    </div>
+
+    <!-- Calendar -->
+    <div id="calendar" class="glass-box"></div>
+
+    <!-- Schedule a Meeting -->
+    {% if is_village_admin %}
+    <div class="text-center my-4">
+        <a href="{% url 'schedule_meeting' %}">
+            <button class="btn btn-primary btn-custom">Schedule a Meeting</button>
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Grievances Section -->
+    <div class="glass-box w-100" style="max-width: 900px;">
+        <h2 class="section-title text-center">Grievances from <b>{{ village.name }}</b></h2>
+
+        {% if grievances %}
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Shared by</th>
+                        <th>Date</th>
+                        <th>Audio</th>
+                        <th>Set agendas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grievance in grievances %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ grievance.made_by.name }}</td>
+                        <td>{{ grievance.date }}</td>
+                        <td><audio controls src="{% get_media_prefix %}{{ grievance.audio }}"></audio></td>
+                        <td>
+                            <button class="btn btn-success btn-sm" onclick="sendimp_req({{ grievance.id }})" id="{{ grievance.id }}_imp">Mark Important</button>
+                            <button class="btn btn-danger btn-sm" onclick="sendunimp_req({{ grievance.id }})" id="{{ grievance.id }}_unimp" style="display:none;">Unmark</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center subtext mt-3">No grievances shared yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Video Recordings Section -->
+    <div class="glass-box video-section">
+        <h2 class="section-title text-center">Meetings' Video Recordings</h2>
 
         {% if is_village_admin %}
-            <a href="{% url 'schedule_meeting' %}">
-                <button class="btn btn-primary"
-                        style="width: 73%; height: 71px; margin-top: 55px; margin-bottom: 55px; margin-left: 117px;">
-                    Schedule a Meeting
-                </button>
+        <div class="text-center my-3">
+            <a href="/upload_meeting">
+                <button class="btn btn-primary btn-custom">Upload New Meeting</button>
             </a>
-        {% endif %}
-        <div class="strip d-flex flex-column align-items-center justify-content-center m-5">
-            <h1>Grievances shared by residents of <b>{{ village.name }}</b></h1>
-
-            {% if grievances %}
-                <div class="my-3">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th class="tbla" scope="col">#</th>
-                            <th class="tbla" scope="col">Shared by</th>
-                            <th class="tbla" scope="col">Shared on</th>
-                            <th class="tbla" scope="col">Audio</th>
-                            <th class="tbla" scope="col">Set agendas</th>
-                        </tr>
-                        </thead>
-                        {% for grievance in grievances %}
-                            <tr>
-                                <th class="tbla" scope="row">{{ forloop.counter }}</th>
-                                <td class="tbla">{{ grievance.made_by.name }}</td>
-                                <td class="tbla">{{ grievance.date }}</td>
-                                <td class="tbla">
-                                    <audio src="{% get_media_prefix %}{{ grievance.audio }}" controls></audio>
-                                </td>
-                                <td class="tbla">
-                                    <button class="btn btn-success" onclick="sendimp_req({{ grievance.id }})"
-                                            id="{{ grievance.id }}_imp">Mark as important
-                                    </button>
-                                    <button class="btn btn-danger" onclick="sendunimp_req({{ grievance.id }})"
-                                            id="{{ grievance.id }}_unimp" style="display: none">Mark as Unimportant
-                                    </button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            {% else %}
-                <h2>No grievances have been shared yet for this village</h2>
-            {% endif %}
         </div>
-        <div class="strip d-flex flex-column justify-content-center align-items-center" style="background-color: #c8d9216b !important;">
-            <h1>Video Recordings of Meetings held in <b>{{ village.name }}</b></h1>
-            {% if is_village_admin %}
-                <a href="/upload_meeting">
-                    <button class="btn btn-primary" style="width: 73%; height: 71px; margin-left: 117px;">Upload new
-                        meeting
-                    </button>
-                </a>
-            {% endif %}
-            <div class="my-5 w-75">
-                <table class="table">
-                    <thead>
-                    <th class="tbla" scope="col">No.</th>
-                    <th class="tbla" scope="col">Held on</th>
-                    <th class="tbla" scope="col">View Recording(s)</th>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Date</th>
+                        <th>Recording</th>
                     </tr>
-                    </thead>
+                </thead>
+                <tbody>
                     {% for meeting in meetings %}
-                        <tr>
-                            <th class="tbla" scope="row">{{ forloop.counter }}</th>
-                            <td class="tbla">{{ meeting.date }}</td>
-                            <td class="tbla">
-                                <button class="btn btn-primary"><a href="/meetings/{{ meeting.id }}"
-                                                                   style="text-decoration: none; color: white;">View
-                                    Recording</a></button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ meeting.date }}</td>
+                        <td>
+                            <a href="/meetings/{{ meeting.id }}" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
                     {% endfor %}
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
-    <script src="{% static 'imp_unimp.js' %}"></script>
-    <script>
-        var element = document.getElementById("calendar");
-        // Create the calendar
 
-        const date = new Date();
+</div>
 
-        let currentDay = String(date.getDate()).padStart(2, '0');
+<!-- JS Calendar Setup -->
+<script src="{% static 'imp_unimp.js' %}"></script>
+<script>
+    var element = document.getElementById("calendar");
+    const date = new Date();
+    let currentDay = String(date.getDate()).padStart(2, '0');
+    let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+    let currentYear = date.getFullYear();
+    let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
+    var myCalendar = jsCalendar.new(element, currentDate);
 
-        let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
-
-        let currentYear = date.getFullYear();
-
-        // we will display the date as DD-MM-YYYY
-
-        let currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-        var myCalendar = jsCalendar.new(element, currentDate);
-
-        data = new FormData();
-        data.append('id', {{ request.user.village.id }});
-        fetch('/scheduled-meetings/', {
-            method: 'post',
-            body: data,
-        }).then(response => response.json()).then((data) => {
-            for (let date in data) {
-                myCalendar.select(Object.values(data));
-            }
-        })
-    </script>
+    let data = new FormData();
+    data.append('id', {{ request.user.village.id }});
+    fetch('/scheduled-meetings/', {
+        method: 'post',
+        body: data,
+    }).then(response => response.json()).then((data) => {
+        for (let date in data) {
+            myCalendar.select(Object.values(data));
+        }
+    })
+</script>
 {% endblock %}

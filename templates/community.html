@@ -1,5 +1,63 @@
 {% extends "base.html" %}
 {% block body %}
-    <h1 class="_heading" style="font-size: 68px;">Community Connect</h1>
-    <p style="padding: 28px 68px; font-weight: bold; font-size: 25px;"> ■ NGOs, CSPs and CSRs yet to be listed.</p>
+<style>
+    body {
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    ._heading {
+        font-size: 68px;
+        font-weight: 700;
+        margin-top: 40px;
+        text-align: center;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        color: #ffffff;
+    }
+
+    .glass-box {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 40px;
+        margin: 40px auto;
+        max-width: 900px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .glass-box:hover {
+        transform: translateY(-5px);
+    }
+
+    .glass-box p {
+        font-size: 24px;
+        font-weight: 500;
+        color: #f1f1f1;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        ._heading {
+            font-size: 48px;
+        }
+
+        .glass-box {
+            padding: 20px;
+        }
+
+        .glass-box p {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<h1 class="_heading">Community Connect</h1>
+
+<div class="glass-box">
+    <p>■ NGOs, CSPs, and CSRs yet to be listed.</p>
+</div>
 {% endblock %}

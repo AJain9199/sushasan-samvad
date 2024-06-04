@@ -3,21 +3,74 @@
     Members of {{ shg.name }}
 {% endblock %}
 {% block body %}
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-        <h1 class="m-3">Members of {{ shg.name }}</h1>
-        <table class="table w-75 m-3">
-            <colgroup>
-                <col span="1">
-                <col span="1" style="width: 40%;">
-            </colgroup>
+<style>
+    body {
+        color: #000; /* Black text */
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h1 {
+        font-weight: 700;
+        margin-top: 40px;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        color: #000;
+    }
+
+    .glass-container {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 30px;
+    }
+
+    .glass-table {
+        background: rgba(255, 255, 255, 0.1); /* Transparent background */
+        backdrop-filter: blur(16px); /* Apply blur effect */
+        -webkit-backdrop-filter: blur(16px); /* Safari support */
+        border-radius: 10px; /* Rounded corners */
+        color: #000; /* Text color */
+        border: 1px solid rgba(255, 255, 255, 0.3); /* Light border for glass effect */
+    }
+
+    .glass-table th,
+    .glass-table td {
+        color: #000; /* Black text for table cells */
+        background: rgba(0, 0, 0, 0.1); /* Slightly transparent background for cells */
+    }
+
+    .glass-table thead {
+        background-color: rgba(0, 0, 0, 0.2); /* Darker background for header */
+    }
+
+    .form-select {
+        background-color: rgba(0, 0, 0, 0.05);
+        border: none;
+        color: #000;
+    }
+
+    .form-select:focus {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="w-100 d-flex flex-column justify-content-center align-items-center">
+    <h1>Members of {{ shg.name }}</h1>
+
+    <!-- Members Table -->
+    <div class="w-75 glass-container">
+        <table class="table glass-table table-hover m-0">
             <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Member</th>
-                <th scope="col">Contribution</th>
-                <th scope="col">Role</th>
-            </tr>
+                <tr>
+                    <th>#</th>
+                    <th>Member</th>
+                    <th>Contribution</th>
+                    <th>Role</th>
+                </tr>
             </thead>
+            <tbody>
             {% for member in shg.shgcontribution_set.all %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
@@ -31,8 +84,7 @@
                                 <input type="hidden" name="user_id" value="{{ member.user.id }}">
                                 <select name="role" class="form-select" onchange="submit_ajax('{% url 'update_role' %}', this.form)">
                                     {% for val, txt in role_choices %}
-                                        <option value="{{ val }}"
-                                                {% if member.role == val %}selected{% endif %}>{{ txt }}</option>
+                                        <option value="{{ val }}" {% if member.role == val %}selected{% endif %}>{{ txt }}</option>
                                     {% endfor %}
                                 </select>
                             </form>
@@ -42,21 +94,23 @@
                     {% endif %}
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     </div>
+</div>
 
-    <script>
-        function submit_ajax(url, form_data) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-            xhr.send(new FormData(form_data));
-        }
+<script>
+    function submit_ajax(url, form_data) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        xhr.send(new FormData(form_data));
+    }
 
-        document.getElementById('update_form').onsubmit = function (e) {
-            e.preventDefault(); // Prevent the default form submission
-            return false;
-        };
-    </script>
+    document.getElementById('update_form').onsubmit = function (e) {
+        e.preventDefault();
+        return false;
+    };
+</script>
 {% endblock %}

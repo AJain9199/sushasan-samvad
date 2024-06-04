@@ -1,28 +1,45 @@
 {% extends "base.html" %}
-
-{% block title %}Register{% endblock %}
-
+{% block title %}Login{% endblock %}
 {% load widget_tweaks %}
+
 {% block body %}
-    <div class="d-flex flex-column justify-content-center w-100 align-items-center">
-        <h1 class="_heading" style="font-size: 68px;">Log in</h1>
-        <form style="width: 25%;" method="post" class="d-flex flex-column justify-content-center align-items-center">
+<div class="container d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="col-md-6 col-lg-4 p-5 shadow rounded-4 bg-light">
+        <h2 class="text-center mb-4 fw-bold text-dark">Log in</h2>
+        <form method="post">
             {% csrf_token %}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
             {% for field in form.visible_fields %}
-                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
-                    <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label text-dark">{{ field.label }}</label>
                     {{ field|add_class:'form-control' }}
                     {% for error in field.errors %}
-                        <span class="help-block">{{ error }}</span>
+                        <div class="form-text text-danger">{{ error }}</div>
                     {% endfor %}
                 </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-ok"></span> Log in
-            </button>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary fw-semibold">Log in</button>
+            </div>
         </form>
     </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .form-control {
+        border-radius: 10px;
+    }
+    .btn-primary {
+        border-radius: 10px;
+        transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+        background-color: #004080;
+    }
+</style>
 {% endblock %}
