@@ -30,6 +30,8 @@
         crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://unpkg.com/simple-jscalendar@1.4.4/source/jsCalendar.min.css"
       integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
+
+<script src="{% static 'get_csrf.js' %}"></script>
 {% load feedbacktags %}
 {% dist_admin request.user as dst_admin %}
 {% village_admin request.user as vil_admin %}

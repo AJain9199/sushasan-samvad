@@ -17,5 +17,5 @@ urlpatterns = [
     path('community/', views.community, name='community'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('aadhaar_data/', views.decode_aadhaar_qr, name='aadhar_data')
+    path('aadhaar_data/', views.decode_aadhaar_qr, name='aadhaar_data')
 ]
