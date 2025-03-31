@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+
+import boto3
 from django.contrib import messages
 from dotenv import load_dotenv
 
@@ -144,6 +146,7 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 DEFAULT_FILE_STORAGE = 'PanchSpeak.storage_backends.MediaStorage'
 
+SMS_CLIENT = boto3.client('sns', region_name='ap-south-1')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

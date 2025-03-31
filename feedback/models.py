@@ -78,6 +78,8 @@ class User(AbstractUser):
         on_delete=models.CASCADE, blank=True, null=True
     )
 
+    otp = models.IntegerField(null=True, blank=True)
+
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True)
     user_code = models.BigIntegerField(null=True, blank=True)
 

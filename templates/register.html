@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Register{% endblock %}
 
@@ -46,7 +47,51 @@
                 </button>
             </div>
         </form>
+
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#popupModal">Open Popup</button>
+
+    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupModalLabel">Popup Title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    This is a simple popup window using Bootstrap.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
+    </div>
+
+
+
+    <script>
+        function openPopup() {
+            document.getElementById("popup").classList.remove("hidden");
+        }
+        function closePopup() {
+            document.getElementById("popup").classList.add("hidden");
+        }
+    </script>
+
+    <video id="qr-scanner"></video>
+{#    <script type="module">#}
+{#        import QrScanner from "{% static 'qr-scanner.min.js' %}";#}
+{##}
+{#        function setAadharData(data) {#}
+{#            document.getElementById("{{ form.aadhaar_data.id_for_label }}").value = JSON.stringify(data["data"]);#}
+{#            scanner.stop();#}
+{#        }#}
+{##}
+{#        const video = document.getElementById('qr-scanner');#}
+{#        const scanner = new QrScanner(video, setAadharData, {highlightScanRegion: true, highlightCodeOutline: true});#}
+{#        scanner.start();#}
+{#    </script>#}
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

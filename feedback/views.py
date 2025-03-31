@@ -4,13 +4,15 @@ from threading import Thread
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm
-from .models import Meeting, MeetingSuggestion, District, Village, Grievance, ScheduleMeeting, User
+from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.contrib.auth.models import Group
 from django.contrib import messages
+from django.conf import settings
+from pyaadhaar.utils import AadhaarQrAuto
 
 
 VILLAGER = 2
@@ -33,12 +35,33 @@ def is_village_admin(user):
     return is_role(user, VILLAGE_ADMIN)
 
 
+def decode_aadhaar_qr(request):
+    if request.method == 'POST':
+        aadhaar_data = AadhaarQrAuto(request.POST['aadhaar']).decodeddata()
+        state_id = State.objects.get(name__icontains=aadhaar_data['state']).pk
+        district_id = subdistict_id = village_id = None
+        if state_id:
+            district_id = District.objects.get(name__icontains=aadhaar_data['district'], state_id=state_id).pk
+
+        if district_id:
+            subdistict_id = SubDistrict.objects.get(name__icontains=aadhaar_data['sub_district'], district_id=district_id).pk
+
+        if village_id:
+            village_id = Village.objects.get(name__icontains=aadhaar_data['village'], sub_district_id=subdistict_id).pk
+
+        return JsonResponse({'name': aadhaar_data['name'], 'state': state_id, 'district': district_id, 'sub_district': subdistict_id, 'village': village_id})
+
+
+
 # Create your views here.
 def register(request):
+    # print(settings.SMS_CLIENT.publish(PhoneNumber="+917717479808", Message="OTP IS TESTING. IGNORE."))
     if request.method == 'GET':
         form = RegistrationForm()
         return render(request, 'register.html', {'form': form})
     elif request.method == 'POST':
+        print(request.POST['aadhaar_data'])
+        return
         form = RegistrationForm(request.POST)
         if form.errors:
             return render(request, 'register.html', {'form': form})
