@@ -70,12 +70,14 @@ class SHGForm(ModelForm):
     def save(self, commit = ...):
         shg = super().save(commit=False)
         shg.created_by = self.request.user
-        shg.members.add(self.request.user, through_defaults={'amount': self.cleaned_data['startup_amount']})
         shg.pool = self.cleaned_data['startup_amount']
+
+        shg.save()
+        shg.members.add(self.request.user, through_defaults={'amount': self.cleaned_data['startup_amount']})
         if commit:
             shg.save()
         return shg
 
     class Meta:
         model = SelfHelpGroup
-        fields = ('name', 'min_contribution', 'description')
+        fields = ('name', 'startup_amount', 'min_contribution', 'target', 'description')

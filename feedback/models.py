@@ -150,6 +150,7 @@ class SHGContribution(models.Model):
 class SelfHelpGroup(models.Model):
     name = models.CharField(_('SHG name'), max_length=200)
     description = models.TextField(_('Description'), blank=True)
+    target = models.CharField(_('Target members'), max_length=200, blank=True)
     members = models.ManyToManyField(User, blank=True, through="SHGContribution", related_name='members')
     pool = models.IntegerField(default=0)
     min_contribution = models.IntegerField(_("Minimum Contribution for new users"), default=0)
