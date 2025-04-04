@@ -1,18 +1,14 @@
-import json
 import random
-from threading import Thread
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm
+from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm, SHGForm
 from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
-from django.contrib.auth.models import Group
 from django.contrib import messages
-from django.conf import settings
-from pyaadhaar import utils, decode
+from pyaadhaar import utils
 
 
 VILLAGER = 2
@@ -208,3 +204,14 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
+
+
+@login_required()
+def create_shg(request):
+    if request.method == 'GET':
+        form = SHGForm()
+        return render(request, 'create_shg.html', {'form': form})
+    elif request.method == 'POST':
+        form = SHGForm(request.POST, request=request)
+        shg = form.save()
+        return HttpResponseRedirect(reverse('village', args=(request.user.village.id,)))

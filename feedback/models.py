@@ -135,3 +135,26 @@ class Grievance(models.Model):
 class ScheduleMeeting(models.Model):
     village = models.ForeignKey(Village, on_delete=models.CASCADE)
     date = models.DateField()
+
+
+class SHGContribution(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.IntegerField(_("Amount"))
+    date = models.DateField(default=django.utils.timezone.now)
+    shg = models.ForeignKey('SelfHelpGroup', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'shg')
+
+
+class SelfHelpGroup(models.Model):
+    name = models.CharField(_('SHG name'), max_length=200)
+    description = models.TextField(_('Description'), blank=True)
+    members = models.ManyToManyField(User, blank=True, through="SHGContribution", related_name='members')
+    pool = models.IntegerField(default=0)
+    min_contribution = models.IntegerField(_("Minimum Contribution for new users"), default=0)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='founder')
+
+
+    def __str__(self):
+        return self.name

@@ -2,7 +2,7 @@ import random
 
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
-from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting
+from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup
 from django import forms
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group
@@ -57,3 +57,25 @@ class ScheduleMeetingForm(ModelForm):
 
 class LoginForm(Form):
     user_code = forms.IntegerField()
+
+
+class SHGForm(ModelForm):
+    startup_amount = forms.IntegerField(label=_("Startup Amount (Your Contribution)"))
+
+    def __init__(self, *args, **kwargs):
+        if kwargs.get('request'):
+            self.request = kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit = ...):
+        shg = super().save(commit=False)
+        shg.created_by = self.request.user
+        shg.members.add(self.request.user, through_defaults={'amount': self.cleaned_data['startup_amount']})
+        shg.pool = self.cleaned_data['startup_amount']
+        if commit:
+            shg.save()
+        return shg
+
+    class Meta:
+        model = SelfHelpGroup
+        fields = ('name', 'min_contribution', 'description')

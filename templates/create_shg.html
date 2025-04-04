@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}
+	Create new Self-Help Group
+{% endblock %}
+{% block body %}
+	<div class="d-flex flex-column justify-content-center w-100 align-items-center">
+        <h1 class="_heading">Create Your SHG</h1>
+        <form method="post" class="form w-100 formx d-flex flex-column justify-content-center align-items-center">
+            {% csrf_token %}
+            {{ form.media.js }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                    <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    {% for error in field.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="form-group d-flex flex-column align-items-center justify-content-center">
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-ok"></span> Create
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
