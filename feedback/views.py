@@ -2,7 +2,8 @@ import random
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm, SHGForm
-from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User
+from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User, \
+    SelfHelpGroup
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -215,3 +216,15 @@ def create_shg(request):
         form = SHGForm(request.POST, request=request)
         shg = form.save()
         return HttpResponseRedirect(reverse('village', args=(request.user.village.id,)))
+
+
+def shgs(request):
+    shg_set = SelfHelpGroup.objects.all()
+
+
+    if request.GET.get('dist_search'):
+        shg_set = shg_set.filter(created_by__district=request.user.district)
+    else:
+        shg_set = shg_set.filter(created_by__village=request.user.village)
+
+    return render(request, 'shgs.html', {'shgs': shg_set})

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+	SHGs in Your Village/District
+{% endblock %}
+{% block body %}
+	<div class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <h1 class="m-3">Villages in District {{ district.name }}</h1>
+        <table class="table w-75 m-3">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">SHG Name</th>
+                    <th scope="col">Minimum Contrib.</th>
+                    <th scope="col">Pool</th>
+                    <th scope="col">Members</th>
+                    <th scope="col">Founder</th>
+                </tr>
+            </thead>
+            {% for shg in shgs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'shg' shg.id %}">{{ shg.name }}</a></td>
+                    <td>Rs. {{ shg.min_contribution }}</td>
+                    <td>Rs. {{ shg.pool }}</td>
+                    <td>{{ shg.members.count }}</td>
+                    <td>{{ shg.created_by.name }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

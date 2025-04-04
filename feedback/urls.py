@@ -19,4 +19,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('aadhaar_data/', views.decode_aadhaar_qr, name='aadhaar_data'),
     path('create_shg/', views.create_shg, name='create_shg'),
+    path('shgs/', views.shgs, name='shgs'),
+    path('shg/<int:shg_id>', views.shgs, name='shg'),
 ]
