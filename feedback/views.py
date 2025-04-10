@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm, SHGForm
 from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User, \
-    SelfHelpGroup
+    SelfHelpGroup, SHGContribution
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -236,6 +236,8 @@ def shg(request, shg_id):
     return render(request, 'shg.html', {'shg': shg_data})
 
 
+@login_required
 def shg_members(request, shg_id):
     shg_data = SelfHelpGroup.objects.get(id=shg_id)
-    return render(request, 'shg_members.html', {'shg': shg_data})
+    is_admin = SHGContribution.objects.get(shg_id=shg_id, user_id=request.user.id).role == SHGContribution.SHGRoles.ADMIN
+    return render(request, 'shg_members.html', {'shg': shg_data, 'is_admin': is_admin})
