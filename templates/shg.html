@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}
+	{{ shg.name }}
+{% endblock %}
+{% block body %}
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">{{ shg.name }}</h1>
+        <div class="backdrop w-75">
+            <div class="d-flex flex-row justify-content-between p-3">
+                <div>
+                    <h1 style="font-size: 32px" class="white">SHG Details</h1>
+                    <p style="font-size: 18px" class="white">
+                        Founder: {{ shg.created_by.name }} <br>
+                        Minimum Contribution: Rs. {{ shg.min_contribution }} <br>
+                        Pool: Rs. {{ shg.pool }} <br>
+                        Members: {{ shg.members.count }} <br>
+
+                        Target Members: {{ shg.target }} <br>
+
+                        Created on: {% for c in shg.shgcontribution_set.all %}
+                        	{% if c.user.id == shg.created_by.id %}
+                        		{{  c.date }}
+                        	{% endif %}
+                        {% endfor %}
+                    </p>
+
+                    <a href="{% url 'shg_members' shg_id=shg.pk %}">
+                    <button type="button" class="btn btn-primary">Members</button>
+                    </a>
+                </div>
+                <div>
+                    <canvas id="contri-chart"></canvas>
+                </div>
+            </div>
+            <table class="table w-75 m-3">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Member Name</th>
+                        <th scope="col">Contribution</th>
+                    </tr>
+                </thead>
+                {% for member in shg.members.all %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ member.name }}</td>
+                        <td>Rs. {{ member.contribution }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        new Chart(document.getElementById('contri-chart'), {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [
+                        {% for member in shg.shgcontribution_set.all %}
+                            {{ member.amount }},
+                        {% endfor %}
+                    ]
+                }],
+
+                labels: [
+                    {% for member in shg.members.all %}
+                        '{{ member.name }}',
+                    {% endfor %}
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return 'Rs. ' + tooltipItem.raw;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Contributions of Members',
+                        color: '#fff',
+                        font: {
+                            size: 20
+                        }
+                    }
+                }
+            }
+        });
+
+
+    </script>
+{% endblock %}

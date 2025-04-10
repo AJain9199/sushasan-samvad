@@ -221,10 +221,21 @@ def create_shg(request):
 def shgs(request):
     shg_set = SelfHelpGroup.objects.all()
 
-
     if request.GET.get('dist_search'):
         shg_set = shg_set.filter(created_by__district=request.user.district)
     else:
         shg_set = shg_set.filter(created_by__village=request.user.village)
 
     return render(request, 'shgs.html', {'shgs': shg_set})
+
+
+def shg(request, shg_id):
+    shg_data = SelfHelpGroup.objects.get(id=shg_id)
+    print(shg_data.members.get(id=request.user.id))
+    print(shg_data.shgcontribution_set.all())
+    return render(request, 'shg.html', {'shg': shg_data})
+
+
+def shg_members(request, shg_id):
+    shg_data = SelfHelpGroup.objects.get(id=shg_id)
+    return render(request, 'shg_members.html', {'shg': shg_data})

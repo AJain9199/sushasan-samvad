@@ -20,5 +20,6 @@ urlpatterns = [
     path('aadhaar_data/', views.decode_aadhaar_qr, name='aadhaar_data'),
     path('create_shg/', views.create_shg, name='create_shg'),
     path('shgs/', views.shgs, name='shgs'),
-    path('shg/<int:shg_id>', views.shgs, name='shg'),
+    path('shg/<int:shg_id>', views.shg, name='shg'),
+    path('shg/<int:shg_id>/members', views.shg_members, name='shg_members'),
 ]
