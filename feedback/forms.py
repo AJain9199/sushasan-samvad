@@ -2,7 +2,7 @@ import random
 
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
-from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup
+from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup, SHGContribution
 from django import forms
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group
@@ -73,7 +73,7 @@ class SHGForm(ModelForm):
         shg.pool = self.cleaned_data['startup_amount']
 
         shg.save()
-        shg.members.add(self.request.user, through_defaults={'amount': self.cleaned_data['startup_amount']})
+        shg.members.add(self.request.user, through_defaults={'amount': self.cleaned_data['startup_amount'], 'role': SHGContribution.SHGRoles.ADMIN})
         if commit:
             shg.save()
         return shg
