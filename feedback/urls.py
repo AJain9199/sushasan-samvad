@@ -22,4 +22,6 @@ urlpatterns = [
     path('shgs/', views.shgs, name='shgs'),
     path('shg/<int:shg_id>', views.shg, name='shg'),
     path('shg/<int:shg_id>/members', views.shg_members, name='shg_members'),
+    path('shg/update_role', views.update_role, name='update_role'),
+    path('shg/join', views.join_shg, name='join_shg'),
 ]

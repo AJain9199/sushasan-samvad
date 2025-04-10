@@ -24,9 +24,14 @@
                         {% endfor %}
                     </p>
 
+                    <div class="d-flex flex-row">
                     <a href="{% url 'shg_members' shg_id=shg.pk %}">
                     <button type="button" class="btn btn-primary">Members</button>
                     </a>
+                        {% if not is_member %}
+                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#popupModal">Join</button>
+                        {% endif %}
+                    </div>
                 </div>
                 <div>
                     <canvas id="contri-chart"></canvas>
@@ -48,6 +53,30 @@
                     </tr>
                 {% endfor %}
             </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupModalLabel">Join {{ shg.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form method="POST" action="{% url 'join_shg' %}" id="join_form" class="form w-100 mt-3 formx d-flex flex-column justify-content-center align-items-center">
+                    {% csrf_token %}
+                    <input type="hidden" name="shg_id" value="{{ shg.id }}">
+                    <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                        <label style="text-align: center" for="amt">Amount to contribute (Min. Rs. {{ shg.min_contribution }})</label>
+                        <input type="number" name="amt" class="form-control" id="amt" placeholder="Enter amount" required>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="document.querySelector('#join_form').submit()">Join</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 

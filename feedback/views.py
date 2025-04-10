@@ -229,15 +229,36 @@ def shgs(request):
     return render(request, 'shgs.html', {'shgs': shg_set})
 
 
+@login_required
 def shg(request, shg_id):
     shg_data = SelfHelpGroup.objects.get(id=shg_id)
-    print(shg_data.members.get(id=request.user.id))
-    print(shg_data.shgcontribution_set.all())
-    return render(request, 'shg.html', {'shg': shg_data})
+    is_member = shg_data.members.filter(id=request.user.id).exists()
+    return render(request, 'shg.html', {'shg': shg_data, 'is_member': is_member})
 
 
 @login_required
 def shg_members(request, shg_id):
     shg_data = SelfHelpGroup.objects.get(id=shg_id)
     is_admin = SHGContribution.objects.get(shg_id=shg_id, user_id=request.user.id).role == SHGContribution.SHGRoles.ADMIN
-    return render(request, 'shg_members.html', {'shg': shg_data, 'is_admin': is_admin})
+    return render(request, 'shg_members.html', {'shg': shg_data, 'is_admin': is_admin, 'role_choices': SHGContribution.SHGRoles.choices})
+
+
+def update_role(request):
+    if request.method == 'POST':
+        shg = SelfHelpGroup.objects.get(id=request.POST['shg_id'])
+        member = User.objects.get(id=request.POST['user_id'])
+        role = request.POST['role']
+        shg.shgcontribution_set.filter(user=member).update(role=role)
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'error'})
+
+
+def join_shg(request):
+    if request.method == 'POST':
+        shg = SelfHelpGroup.objects.get(id=request.POST['shg_id'])
+        amount = request.POST['amt']
+        shg.members.add(request.user, through_defaults={'amount': amount})
+        return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
+    else:
+        return JsonResponse({'status': 'error'})

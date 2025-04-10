@@ -6,6 +6,10 @@
     <div class="w-100 d-flex flex-column justify-content-center align-items-center">
         <h1 class="m-3">Members of {{ shg.name }}</h1>
         <table class="table w-75 m-3">
+            <colgroup>
+                <col span="1">
+                <col span="1" style="width: 40%;">
+            </colgroup>
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -14,14 +18,45 @@
                 <th scope="col">Role</th>
             </tr>
             </thead>
-                {% for member in shg.shgcontribution_set.all %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ member.user.name }}</td>
-                        <td>Rs. {{ member.amount }}</td>
+            {% for member in shg.shgcontribution_set.all %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ member.user.name }}</td>
+                    <td>Rs. {{ member.amount }}</td>
+                    {% if is_admin and member.user.id != request.user.id %}
+                        <td>
+                            <form id="update_form">
+                                {% csrf_token %}
+                                <input type="hidden" name="shg_id" value="{{ shg.id }}">
+                                <input type="hidden" name="user_id" value="{{ member.user.id }}">
+                                <select name="role" class="form-select" onchange="submit_ajax('{% url 'update_role' %}', this.form)">
+                                    {% for val, txt in role_choices %}
+                                        <option value="{{ val }}"
+                                                {% if member.role == val %}selected{% endif %}>{{ txt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
+                    {% else %}
                         <td>{{ member.get_role_display }}</td>
-                    </tr>
-                {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
         </table>
     </div>
+
+    <script>
+        function submit_ajax(url, form_data) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            xhr.send(new FormData(form_data));
+        }
+
+        document.getElementById('update_form').onsubmit = function (e) {
+            e.preventDefault(); // Prevent the default form submission
+            return false;
+        };
+    </script>
 {% endblock %}
