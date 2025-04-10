@@ -40,11 +40,11 @@
                         <th scope="col">Contribution</th>
                     </tr>
                 </thead>
-                {% for member in shg.members.all %}
+                {% for member in shg.shgcontribution_set.all %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ member.name }}</td>
-                        <td>Rs. {{ member.contribution }}</td>
+                        <td>{{ member.user.name }}</td>
+                        <td>Rs. {{ member.amount }}</td>
                     </tr>
                 {% endfor %}
             </table>

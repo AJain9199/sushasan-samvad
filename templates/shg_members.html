@@ -1,4 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}
-	Members of {{ shg.name }}
+    Members of {{ shg.name }}
+{% endblock %}
+{% block body %}
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <h1 class="m-3">Members of {{ shg.name }}</h1>
+        <table class="table w-75 m-3">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Member</th>
+                <th scope="col">Contribution</th>
+                <th scope="col">Role</th>
+            </tr>
+            </thead>
+                {% for member in shg.shgcontribution_set.all %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ member.user.name }}</td>
+                        <td>Rs. {{ member.amount }}</td>
+                        <td>{{ member.get_role_display }}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+    </div>
 {% endblock %}
