@@ -1,9 +1,9 @@
 import random
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm, SHGForm
+from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm, SHGForm, SHGLoanRequestForm
 from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User, \
-    SelfHelpGroup, SHGContribution
+    SelfHelpGroup, SHGContribution, SHGLoan, calculate_repayment_terms
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -232,8 +232,16 @@ def shgs(request):
 @login_required
 def shg(request, shg_id):
     shg_data = SelfHelpGroup.objects.get(id=shg_id)
-    is_member = shg_data.members.filter(id=request.user.id).exists()
-    return render(request, 'shg.html', {'shg': shg_data, 'is_member': is_member})
+    membership = shg_data.shgcontribution_set.filter(user_id=request.user.id)
+    is_member = False
+    is_admin = False
+
+    if membership.exists():
+        is_member = True
+        if membership.first().role == SHGContribution.SHGRoles.ADMIN:
+            is_admin = True
+
+    return render(request, 'shg.html', {'shg': shg_data, 'is_member': is_member, 'is_admin': is_admin})
 
 
 @login_required
@@ -262,3 +270,30 @@ def join_shg(request):
         return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
     else:
         return JsonResponse({'status': 'error'})
+
+
+def loan_request(request, shg_id):
+    if request.method == 'POST':
+        form = SHGLoanRequestForm(request.POST, request=request)
+        if form.is_valid():
+            loan_req = form.save(commit=False)
+            loan_req.shg = SelfHelpGroup.objects.get(id=shg_id)
+            loan_req.save()
+            messages.success(request, f"Your loan request id {loan_req.id} has been submitted successfully.")
+            return HttpResponseRedirect(reverse('shg', args=(shg_id,)))
+        else:
+            shg = SelfHelpGroup.objects.get(id=shg_id)
+            return render(request, 'loan_request.html', {'shg_form': form, 'shg': shg})
+
+    elif request.method == 'GET':
+        shg_form = SHGLoanRequestForm()
+        shg = SelfHelpGroup.objects.get(id=shg_id)
+        return render(request, 'loan_request.html', {'shg_form': shg_form, 'shg': shg})
+
+
+def loan_request_detail(request, shg_id):
+    print(request.POST)
+    if request.method == 'POST':
+        shg = SelfHelpGroup.objects.get(id=shg_id)
+        total_payable, amortzn = calculate_repayment_terms(shg.interest_model, float(request.POST['principal']), int(request.POST['duration']), float(request.POST['interest_rate']), int(request.POST['repayment_freq']))
+        return JsonResponse({'total_payable': total_payable, 'amortzn': amortzn})

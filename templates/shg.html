@@ -25,12 +25,13 @@
                     </p>
 
                     <div class="d-flex flex-row">
-                    <a href="{% url 'shg_members' shg_id=shg.pk %}">
-                    <button type="button" class="btn btn-primary">Members</button>
-                    </a>
+                        <a href="{% url 'shg_members' shg_id=shg.pk %}">
+                        <button type="button" class="btn btn-primary">Members</button>
+                        </a>
                         {% if not is_member %}
                             <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#popupModal">Join</button>
                         {% endif %}
+
                     </div>
                 </div>
                 <div>

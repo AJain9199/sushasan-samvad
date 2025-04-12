@@ -173,108 +173,108 @@ class SHGLoan(models.Model):
     purpose = models.TextField(_("Purpose"))
     approval_date = models.DateField(null=True, blank=True)
     duration = models.IntegerField(_("Duration (in months)"))
-    repayment_freq = models.IntegerField(choices=RepaymentFrequency.choices, default=RepaymentFrequency.MONTHLY)
+    repayment_freq = models.IntegerField(_("Repayment Frequency"), choices=RepaymentFrequency.choices, default=RepaymentFrequency.MONTHLY)
     interest_rate = models.FloatField(_("Annual Interest Rate"))
 
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
     amortization_schedule = models.JSONField(default=list, blank=True)
 
-    def calculate_params(self):
-        # Calculate the number of installments and the period interest rate
+def calculate_params(duration, interest_rate, repayment_freq):
+    # Calculate the number of installments and the period interest rate
 
-        installment_count = self.duration  # in months
-        interest_rate = (self.interest_rate / 100)  # annual interest rate
+    installment_count = duration  # in months
+    interest_rate = (interest_rate / 100)  # annual interest rate
 
-        period_interest_rate = 0
+    period_interest_rate = 0
 
-        if self.repayment_freq == self.RepaymentFrequency.MONTHLY:
-            period_interest_rate = interest_rate / 12
-        if self.repayment_freq == self.RepaymentFrequency.WEEKLY:
-            installment_count *= 4
-            period_interest_rate = interest_rate / 52
-        elif self.repayment_freq == self.RepaymentFrequency.BIWEEKLY:
-            installment_count *= 2
-            period_interest_rate = interest_rate / 26
-        elif self.repayment_freq == self.RepaymentFrequency.QUARTERLY:
-            installment_count //= 3
-            period_interest_rate = interest_rate / 4
+    if repayment_freq == SHGLoan.RepaymentFrequency.MONTHLY:
+        period_interest_rate = interest_rate / 12
+    if repayment_freq == SHGLoan.RepaymentFrequency.WEEKLY:
+        installment_count *= 4
+        period_interest_rate = interest_rate / 52
+    elif repayment_freq == SHGLoan.RepaymentFrequency.BIWEEKLY:
+        installment_count *= 2
+        period_interest_rate = interest_rate / 26
+    elif repayment_freq == SHGLoan.RepaymentFrequency.QUARTERLY:
+        installment_count //= 3
+        period_interest_rate = interest_rate / 4
 
-        installment_count = max(1, installment_count)
-        return installment_count, period_interest_rate
+    installment_count = max(1, installment_count)
+    return installment_count, period_interest_rate
 
-    def calculate_repayment_terms(self):
-        amortization_schedule = []
-        total_payable = 0
+def calculate_repayment_terms(interest_model, principal, duration, interest_rate, repayment_freq):
+    amortization_schedule = []
+    total_payable = 0
 
-        shg_int_model = self.shg.interest_model
+    shg_int_model = interest_model
 
-        ins_count, prd_rate = self.calculate_params()
+    ins_count, prd_rate = calculate_params(duration, interest_rate, repayment_freq)
 
-        if shg_int_model == SelfHelpGroup.InterestModel.FLAT:
-            total_interest = self.principal * prd_rate * ins_count
-            total_payable = self.principal + total_interest
+    if shg_int_model == SelfHelpGroup.InterestModel.FLAT:
+        total_interest = principal * prd_rate * ins_count
+        total_payable = principal + total_interest
 
-            total_installment = total_payable / ins_count
-            principal_installment = self.principal / ins_count
-            interest_installment = total_interest / ins_count
+        total_installment = total_payable / ins_count
+        principal_installment = principal / ins_count
+        interest_installment = total_interest / ins_count
 
-            amortization_schedule = [
-                                        round(principal_installment, 2),
-                                        round(interest_installment, 2),
-                                        round(total_installment, 2),
-                                    ] * ins_count
+        amortization_schedule = [[
+                                    round(principal_installment, 2),
+                                    round(interest_installment, 2),
+                                    round(total_installment, 2),
+                                ]] * ins_count
 
-        elif shg_int_model == SelfHelpGroup.InterestModel.DECLINING:
-            remaining_principal = self.principal
-            total_payable = self.principal
+    elif shg_int_model == SelfHelpGroup.InterestModel.DECLINING:
+        remaining_principal = principal
+        total_payable = principal
 
-            principal_per_installment = self.principal / ins_count
+        principal_per_installment = principal / ins_count
 
-            for i in range(ins_count):
-                interest_payment = remaining_principal * prd_rate
-                principal_payment = principal_per_installment
-                installment_amount = principal_payment + interest_payment
+        for i in range(ins_count):
+            interest_payment = remaining_principal * prd_rate
+            principal_payment = principal_per_installment
+            installment_amount = principal_payment + interest_payment
 
-                total_payable += interest_payment
-                remaining_principal -= principal_payment
+            total_payable += interest_payment
+            remaining_principal -= principal_payment
 
-                amortization_schedule.append([
-                    round(principal_payment, 2), round(2, interest_payment), round(2, installment_amount)])
-        elif shg_int_model == SelfHelpGroup.InterestModel.FLAT_DECLINING:
-            total_interest = self.principal * prd_rate * ins_count * self.REDUCING_FACTOR
-            total_payable = self.principal + total_interest
-            total_installment = total_payable / ins_count
-            principal_installment = self.principal / ins_count
-            interest_installment = total_interest / ins_count
+            amortization_schedule.append([
+                round(principal_payment, 2), round(2, interest_payment), round(2, installment_amount)])
+    elif shg_int_model == SelfHelpGroup.InterestModel.FLAT_DECLINING:
+        total_interest = principal * prd_rate * ins_count * SHGLoan.REDUCING_FACTOR
+        total_payable = principal + total_interest
+        total_installment = total_payable / ins_count
+        principal_installment = principal / ins_count
+        interest_installment = total_interest / ins_count
 
-            amortization_schedule = [
-                                        round(principal_installment, 2),
-                                        round(interest_installment, 2),
-                                        round(total_installment, 2),
-                                    ] * ins_count
-        elif shg_int_model == SelfHelpGroup.InterestModel.EMI or shg_int_model == SelfHelpGroup.InterestModel.COMPOUND:
-            if prd_rate > 0:
-                emi = self.principal * (prd_rate * (1 + prd_rate) ** ins_count) / ((1 + prd_rate) ** ins_count - 1)
-                total_installment = self.principal * emi
-            else:
-                total_installment = self.principal / ins_count
+        amortization_schedule = [
+                                    round(principal_installment, 2),
+                                    round(interest_installment, 2),
+                                    round(total_installment, 2),
+                                ] * ins_count
+    elif shg_int_model == SelfHelpGroup.InterestModel.EMI or shg_int_model == SelfHelpGroup.InterestModel.COMPOUND:
+        if prd_rate > 0:
+            emi = principal * (prd_rate * (1 + prd_rate) ** ins_count) / ((1 + prd_rate) ** ins_count - 1)
+            total_installment = principal * emi
+        else:
+            total_installment = principal / ins_count
 
-            remaining = self.principal
-            for i in range(ins_count):
-                interest_installment = remaining * prd_rate
-                principal_installment = total_installment - interest_installment
+        remaining = principal
+        for i in range(ins_count):
+            interest_installment = remaining * prd_rate
+            principal_installment = total_installment - interest_installment
 
-                if i == ins_count - 1:
-                    principal_installment = remaining
-                    total_installment = principal_installment + interest_installment
+            if i == ins_count - 1:
+                principal_installment = remaining
+                total_installment = principal_installment + interest_installment
 
-                if remaining < 0.01:
-                    remaining = 0
+            if remaining < 0.01:
+                remaining = 0
 
-                amortization_schedule.append([
-                    round(principal_installment, 2), round(interest_installment, 2), round(total_installment, 2)])
-        return total_payable, amortization_schedule
+            amortization_schedule.append([
+                round(principal_installment, 2), round(interest_installment, 2), round(total_installment, 2)])
+    return total_payable, amortization_schedule
 
 
 class SelfHelpGroup(models.Model):

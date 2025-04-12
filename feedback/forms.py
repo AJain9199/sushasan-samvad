@@ -2,7 +2,7 @@ import random
 
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
-from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup, SHGContribution
+from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup, SHGContribution, SHGLoan
 from django import forms
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group
@@ -81,3 +81,26 @@ class SHGForm(ModelForm):
     class Meta:
         model = SelfHelpGroup
         fields = ('name', 'startup_amount', 'min_contribution', 'target', 'description')
+
+
+class SHGLoanRequestForm(ModelForm):
+    amount = forms.IntegerField(label=_("Loan Amount"))
+
+    def __init__(self, *args, **kwargs):
+        if kwargs.get('request'):
+            self.request = kwargs.pop('request')
+
+        if kwargs.get('shg_id'):
+            self.shg = kwargs.pop('shg_id')
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        shg_loan_request = super().save(commit=False)
+        shg_loan_request.user = self.request.user
+        if commit:
+            shg_loan_request.save()
+        return shg_loan_request
+
+    class Meta:
+        model = SHGLoan
+        fields = ('principal', 'purpose', 'duration', 'repayment_freq', 'interest_rate')
