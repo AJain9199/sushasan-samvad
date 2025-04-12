@@ -84,8 +84,6 @@ class SHGForm(ModelForm):
 
 
 class SHGLoanRequestForm(ModelForm):
-    amount = forms.IntegerField(label=_("Loan Amount"))
-
     def __init__(self, *args, **kwargs):
         if kwargs.get('request'):
             self.request = kwargs.pop('request')

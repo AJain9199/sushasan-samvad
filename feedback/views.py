@@ -275,6 +275,7 @@ def join_shg(request):
 def loan_request(request, shg_id):
     if request.method == 'POST':
         form = SHGLoanRequestForm(request.POST, request=request)
+        print(form.errors)
         if form.is_valid():
             loan_req = form.save(commit=False)
             loan_req.shg = SelfHelpGroup.objects.get(id=shg_id)
@@ -292,7 +293,6 @@ def loan_request(request, shg_id):
 
 
 def loan_request_detail(request, shg_id):
-    print(request.POST)
     if request.method == 'POST':
         shg = SelfHelpGroup.objects.get(id=shg_id)
         total_payable, amortzn = calculate_repayment_terms(shg.interest_model, float(request.POST['principal']), int(request.POST['duration']), float(request.POST['interest_rate']), int(request.POST['repayment_freq']))
