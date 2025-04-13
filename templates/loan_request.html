@@ -40,8 +40,7 @@
         <div class="row g-3 form-group">
             <div class="col-md-6">
                 <div class="mb-3" id="div_{{ shg_form.principal.id_for_label }}">
-                    <label style="text-align: center" for="{{ field.principal.id_for_label }}">{{
-                        shg_form.principal.label }}</label>
+                    <label style="text-align: center" for="{{ field.principal.id_for_label }}">{{ shg_form.principal.label }}</label>
                     <div class="d-flex flex-row align-items-center">
                         <span class="me-2"><strong>Rs. </strong></span>
                         {{ shg_form.principal|add_class:'form-control' }}
@@ -53,8 +52,7 @@
             </div>
             <div class="col-md-6">
                 <div class="mb-3" id="div_{{ shg_form.interest_rate.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.interest_rate.id_for_label }}">{{
-                        shg_form.interest_rate.label }}</label>
+                    <label style="text-align: center" for="{{ shg_form.interest_rate.id_for_label }}">{{ shg_form.interest_rate.label }}</label>
 
                     <div class="d-flex flex-row align-items-center">
                         {{ shg_form.interest_rate|add_class:'form-control' }}
@@ -67,8 +65,7 @@
             </div>
             <div class="col-md-6">
                 <div class="mb-3" id="div_{{ shg_form.duration.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.duration.id_for_label }}">{{
-                        shg_form.duration.label }}</label>
+                    <label style="text-align: center" for="{{ shg_form.duration.id_for_label }}">{{ shg_form.duration.label }}</label>
                     {{ shg_form.duration|add_class:'form-control' }}
 
                     {% for error in shg_form.duration.errors %}
@@ -78,8 +75,7 @@
             </div>
             <div class="col-md-6">
                 <div class="mb-3" id="div_{{ shg_form.repayment_freq.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.repayment_freq.id_for_label }}">{{
-                        shg_form.repayment_freq.label }}</label>
+                    <label style="text-align: center" for="{{ shg_form.repayment_freq.id_for_label }}">{{ shg_form.repayment_freq.label }}</label>
                     {{ shg_form.repayment_freq|add_class:'form-control' }}
                     {% for error in shg_form.repayment_freq.errors %}
                     <span class="help-block">{{ error }}</span>
@@ -88,8 +84,7 @@
             </div>
             <div class="col-12">
                 <div class="mb-3" id="div_{{ shg_form.purpose.id_for_label }}">
-                    <label style="text-align: center" for="{{ shg_form.purpose.id_for_label }}">{{
-                        shg_form.purpose.label }}</label>
+                    <label style="text-align: center" for="{{ shg_form.purpose.id_for_label }}">{{ shg_form.purpose.label }}</label>
                     {{ shg_form.purpose|add_class:'form-control' }}
                     {% for error in shg_form.purpose.errors %}
                     <span class="help-block">{{ error }}</span>
@@ -217,6 +212,7 @@
         try {
             let send_data = collectData();
             send_data.append("draft", true);
+            send_data.append("shg_id", {{ shg.id }});
             send_data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
 
             const response = await fetch("{% url 'loan_details' %}", {

@@ -70,12 +70,13 @@ class SHGForm(ModelForm):
     def save(self, commit = ...):
         shg = super().save(commit=False)
         shg.created_by = self.request.user
-        shg.pool = self.cleaned_data['startup_amount']
 
         shg.save()
-        shg.members.add(self.request.user, through_defaults={'amount': self.cleaned_data['startup_amount'], 'role': SHGContribution.SHGRoles.ADMIN})
+        membership = SHGContribution(user=self.request.user, shg=shg, role=SHGContribution.SHGRoles.ADMIN)
+        membership.contribute(self.cleaned_data['startup_amount'])
         if commit:
             shg.save()
+            membership.save()
         return shg
 
     class Meta:

@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 from smart_selects.db_fields import ChainedForeignKey
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class State(models.Model):
@@ -147,10 +148,17 @@ class SHGContribution(models.Model):
     shg = models.ForeignKey('SelfHelpGroup', on_delete=models.CASCADE)
     role = models.IntegerField(choices=SHGRoles.choices, default=SHGRoles.MEMBER)
 
-    contrib = models.JSONField(default=list, blank=True)
+    contrib = models.JSONField(default=list, blank=True, encoder=DjangoJSONEncoder)
+
+    @property
+    def amount(self):
+        a = 0
+        for [_, amt] in self.contrib:
+            a += amt
+        return a
 
     def contribute(self, amount):
-        contrib.append((django.utils.timezone.now(), amount))
+        self.contrib.append((django.utils.timezone.now(), amount))
         self.save()
 
     class Meta:
@@ -203,7 +211,7 @@ class SHGLoan(models.Model):
                 self.interest_rate,
                 self.repayment_freq
             )
-        super().save(force_insert, force_update, using, update_fields)
+        super().save()
     
     def approve(self):
         self.status = self.Status.ACTIVE
@@ -211,8 +219,10 @@ class SHGLoan(models.Model):
     
     @property
     def amount_paid(self):
+        if self.status != self.Status.ACTIVE:
+            return 0
         p = 0
-        for installment in amortization_schedule:
+        for installment in self.amortization_schedule:
             if installment[3] < django.utils.timezone.now():
                 p += installment[2]
         return p
@@ -355,7 +365,7 @@ class SelfHelpGroup(models.Model):
     def pool(self):
         p = 0
         for contri in self.shgcontribution_set.all():
-            p += sum(contri.contrib)
+            p += contri.amount
         
         for loan in SHGLoan.objects.filter(shg_id=self.id):
             p -= loan.principal

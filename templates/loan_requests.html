@@ -20,7 +20,8 @@
             </tr>
         </thead>
         {% for loan in loans %}
-        <tr data-loan-id="{{ loan.id }}">
+        <tr data-loan-id="{{ loan.id }}" data-bs-toggle="collapse" data-bs-target="#details{{loan.id}}"
+            class="accordion-toggle">
             <th scope="row">{{ forloop.counter }}</th>
             <td>{{ loan.user.name }}</td>
             <td class="currency">{{ loan.principal }}</td>
@@ -31,6 +32,16 @@
             <div>
                 Chak de
             </div>
+        </tr>
+        <tr>
+            <td colspan="6" class="hidden-row">
+                <div class="collapse" id="details{{loan.id}}">
+                    <div class="bg-light rounded p-3 mb-4">
+                        <h5>Total Payable</h5>
+                        <div class="text-primary mb-3 fs-1 fw-bold currency">{{ loan.total_payable }}</div>
+                    </div>
+                </div>
+            </td>
         </tr>
         {% endfor %}
     </table>

@@ -295,8 +295,9 @@ def loan_request(request, shg_id):
         return render(request, 'loan_request.html', {'shg_form': shg_form, 'shg': shg})
 
 
-def loan_details(request, shg_id):
+def loan_details(request):
     if request.method == 'POST':
+        shg_id = int(request.POST['shg_id'])
         if request.POST['draft']:
             shg = SelfHelpGroup.objects.get(id=shg_id)
             total_payable, amortzn = calculate_repayment_terms(shg.interest_model, float(request.POST['principal']), int(request.POST['duration']), float(request.POST['interest_rate']), int(request.POST['repayment_freq']))
