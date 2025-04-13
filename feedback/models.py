@@ -227,6 +227,14 @@ class SHGLoan(models.Model):
                 p += installment[2]
         return p
 
+    @property
+    def interest(self):
+        return self.total_payable - self.principal
+
+    @property
+    def percent_of_pool(self):
+        return round((self.principal/self.shg.pool) * 100, 1)
+
 def calculate_params(duration, interest_rate, repayment_freq):
     # Calculate the number of installments and the period interest rate
 
