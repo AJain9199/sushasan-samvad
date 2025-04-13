@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext as _
 from smart_selects.db_fields import ChainedForeignKey
+from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
 
 
 class State(models.Model):
@@ -141,10 +143,15 @@ class SHGContribution(models.Model):
         MEMBER = 2, _("Member")
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    amount = models.IntegerField(_("Amount"))
     date = models.DateField(default=django.utils.timezone.now)
     shg = models.ForeignKey('SelfHelpGroup', on_delete=models.CASCADE)
     role = models.IntegerField(choices=SHGRoles.choices, default=SHGRoles.MEMBER)
+
+    contrib = models.JSONField(default=list, blank=True)
+
+    def contribute(self, amount):
+        contrib.append((django.utils.timezone.now(), amount))
+        self.save()
 
     class Meta:
         unique_together = ('user', 'shg')
@@ -197,6 +204,18 @@ class SHGLoan(models.Model):
                 self.repayment_freq
             )
         super().save(force_insert, force_update, using, update_fields)
+    
+    def approve(self):
+        self.status = self.Status.ACTIVE
+        amortization_schedule = add_amortzn_dates(amortization_schedule, self.shg.interest_model, django.utils.timezone.now())
+    
+    @property
+    def amount_paid(self):
+        p = 0
+        for installment in amortization_schedule:
+            if installment[3] < django.utils.timezone.now():
+                p += installment[2]
+        return p
 
 def calculate_params(duration, interest_rate, repayment_freq):
     # Calculate the number of installments and the period interest rate
@@ -220,6 +239,26 @@ def calculate_params(duration, interest_rate, repayment_freq):
 
     installment_count = max(1, installment_count)
     return installment_count, period_interest_rate
+
+def get_next_payment_date(current_date, freq):
+    if freq == SHGLoan.RepaymentFrequency.WEEKLY:
+        return current_date + timedelta(days=7)
+    elif freq == SHGLoan.RepaymentFrequency.BIWEEKLY:
+        return current_date + timedelta(days=14)
+    elif freq == SHGLoan.RepaymentFrequency.MONTHLY:
+        return current_date + relativedelta(months=1)
+    elif freq == SHGLoan.RepaymentFrequency.QUARTERLY:
+        return current_date + relativedelta(months=3)
+
+
+def add_amortzn_dates(sched, freq, start_date):
+    next_date = 0
+    payment_date = get_next_payment_date(start_date, freq)
+    for installment in sched:
+        installment.append(payment_date)
+        payment_date = get_next_payment_date(payment_date, freq)
+    return sched
+        
 
 def calculate_repayment_terms(interest_model, principal, duration, interest_rate, repayment_freq):
     amortization_schedule = []
@@ -307,11 +346,22 @@ class SelfHelpGroup(models.Model):
     description = models.TextField(_('Description'), blank=True)
     target = models.CharField(_('Target members'), max_length=200, blank=True)
     members = models.ManyToManyField(User, blank=True, through="SHGContribution", related_name='members')
-    pool = models.IntegerField(default=0)
     min_contribution = models.IntegerField(_("Minimum Contribution for new users"), default=0)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='founder')
 
     interest_model = models.IntegerField(choices=InterestModel.choices, default=InterestModel.FLAT)
+
+    @property
+    def pool(self):
+        p = 0
+        for contri in self.shgcontribution_set.all():
+            p += sum(contri.contrib)
+        
+        for loan in SHGLoan.objects.filter(shg_id=self.id):
+            p -= loan.principal
+            p += loan.amount_paid
+
+        return p
 
     def __str__(self):
         return self.name

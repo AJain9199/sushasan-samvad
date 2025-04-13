@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}View loan requests for {{ shg.name }} {% endblock %}
+
+{% load widget_tweaks %}
+{% block body %}
+
+<div class="w-100 d-flex flex-column justify-content-center align-items-center">
+    <h1 class="m-3">Loan requests- {{ shg.name }}</h1>
+    <table class="table w-75 m-3">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Member</th>
+                <th scope="col">Principal Amount</th>
+                <th scope="col">Total Payable</th>
+                <th scope="col">Interest Rate</th>
+                <th scope="col">Duration (months)</th>
+            </tr>
+        </thead>
+        {% for loan in loans %}
+        <tr data-loan-id="{{ loan.id }}">
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ loan.user.name }}</td>
+            <td class="currency">{{ loan.principal }}</td>
+            <td class="currency">{{ loan.total_payable }}</td>
+            <td>{{ loan.interest_rate }} %</td>
+            <td>{{ loan.duration }}</td>
+
+            <div>
+                Chak de
+            </div>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+<div class="offcanvas offcanvas-start show" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasLabel">Offcanvas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        Content for the offcanvas goes here. You can place just about any Bootstrap component or custom elements
+        here.
+    </div>
+</div>
+
+{% endblock %}

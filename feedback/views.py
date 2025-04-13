@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.contrib import messages
+from django.forms import model_to_dict
 from pyaadhaar import utils
 
 
@@ -266,7 +267,9 @@ def join_shg(request):
     if request.method == 'POST':
         shg = SelfHelpGroup.objects.get(id=request.POST['shg_id'])
         amount = int(request.POST['amt'])
-        shg.members.add(request.user, through_defaults={'amount': amount})
+        membership = SHGContribution(user=request.user, shg=shg)
+        membership.contribute(amount)
+
         return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
     else:
         return JsonResponse({'status': 'error'})
@@ -292,23 +295,39 @@ def loan_request(request, shg_id):
         return render(request, 'loan_request.html', {'shg_form': shg_form, 'shg': shg})
 
 
-def loan_request_detail(request, shg_id):
+def loan_details(request, shg_id):
     if request.method == 'POST':
+        if request.POST['draft']:
+            shg = SelfHelpGroup.objects.get(id=shg_id)
+            total_payable, amortzn = calculate_repayment_terms(shg.interest_model, float(request.POST['principal']), int(request.POST['duration']), float(request.POST['interest_rate']), int(request.POST['repayment_freq']))
+            return JsonResponse({'total_payable': total_payable, 'amortzn': amortzn})
+        else:
+            loan_id = request.POST['loan_id']
+            loan = SHGLoan.objects.get(id=loan_id)
+
+            return JsonResponse(model_to_dict(loan))
+
+
+def loan_requests(request, shg_id):
+    if request.method == 'GET':
         shg = SelfHelpGroup.objects.get(id=shg_id)
-        total_payable, amortzn = calculate_repayment_terms(shg.interest_model, float(request.POST['principal']), int(request.POST['duration']), float(request.POST['interest_rate']), int(request.POST['repayment_freq']))
-        return JsonResponse({'total_payable': total_payable, 'amortzn': amortzn})
+        loans = SHGLoan.objects.filter(shg_id=shg_id)
+
+        print(loans)
+        if request.GET.get('q') == 'pending':
+            loans = loans.filter(status=SHGLoan.Status.PENDING)
+            
+        return render(request, 'loan_requests.html', {'loans': loans, 'shg': shg})
 
 
 def contribute(request, shg_id):
     if request.method == 'POST':
         shg = SelfHelpGroup.objects.get(id=request.POST['shg_id'])
-        print(request.POST)
         amount = int(request.POST['contri'])
         membership = SHGContribution.objects.get(user_id=request.user.id, shg_id=shg_id)
-        membership.amount += amount
+        membership.contribute(amount)
         membership.save()
-        shg.pool += amount
-        shg.save()
+
         return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
     else:
         return JsonResponse({'status': 'error'})
