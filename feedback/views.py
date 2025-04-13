@@ -265,7 +265,7 @@ def update_role(request):
 def join_shg(request):
     if request.method == 'POST':
         shg = SelfHelpGroup.objects.get(id=request.POST['shg_id'])
-        amount = request.POST['amt']
+        amount = int(request.POST['amt'])
         shg.members.add(request.user, through_defaults={'amount': amount})
         return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
     else:
@@ -280,7 +280,7 @@ def loan_request(request, shg_id):
             loan_req = form.save(commit=False)
             loan_req.shg = SelfHelpGroup.objects.get(id=shg_id)
             loan_req.save()
-            messages.success(request, f"Your loan request id {loan_req.id} has been submitted successfully.")
+            messages.success(request, f"Your loan request (ID: {loan_req.id}) has been submitted successfully.")
             return HttpResponseRedirect(reverse('shg', args=(shg_id,)))
         else:
             shg = SelfHelpGroup.objects.get(id=shg_id)
@@ -297,3 +297,18 @@ def loan_request_detail(request, shg_id):
         shg = SelfHelpGroup.objects.get(id=shg_id)
         total_payable, amortzn = calculate_repayment_terms(shg.interest_model, float(request.POST['principal']), int(request.POST['duration']), float(request.POST['interest_rate']), int(request.POST['repayment_freq']))
         return JsonResponse({'total_payable': total_payable, 'amortzn': amortzn})
+
+
+def contribute(request, shg_id):
+    if request.method == 'POST':
+        shg = SelfHelpGroup.objects.get(id=request.POST['shg_id'])
+        print(request.POST)
+        amount = int(request.POST['contri'])
+        membership = SHGContribution.objects.get(user_id=request.user.id, shg_id=shg_id)
+        membership.amount += amount
+        membership.save()
+        shg.pool += amount
+        shg.save()
+        return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
+    else:
+        return JsonResponse({'status': 'error'})

@@ -166,7 +166,7 @@ class SHGLoan(models.Model):
         COMPLETED = 3, _("Completed")
         DEFAULTED = 4, _("Defaulted")
 
-    principal = models.IntegerField(_("Principal"))
+    principal = models.FloatField(_("Principal"))
     date = models.DateField(default=django.utils.timezone.now)
     shg = models.ForeignKey('SelfHelpGroup', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -178,7 +178,25 @@ class SHGLoan(models.Model):
 
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
+    total_payable = models.FloatField(_("Total Payable"), default=0)
     amortization_schedule = models.JSONField(default=list, blank=True)
+
+    def save(
+        self,
+        force_insert = ...,
+        force_update = ...,
+        using = ...,
+        update_fields = ...,
+    ):
+        if not self.amortization_schedule:
+            self.total_payable, self.amortization_schedule = calculate_repayment_terms(
+                self.shg.interest_model,
+                self.principal,
+                self.duration,
+                self.interest_rate,
+                self.repayment_freq
+            )
+        super().save(force_insert, force_update, using, update_fields)
 
 def calculate_params(duration, interest_rate, repayment_freq):
     # Calculate the number of installments and the period interest rate

@@ -1,131 +1,170 @@
 {% extends 'base.html' %}
 {% block title %}
-	{{ shg.name }}
+{{ shg.name }}
 {% endblock %}
 {% block body %}
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">{{ shg.name }}</h1>
-        <div class="backdrop w-75">
-            <div class="d-flex flex-row justify-content-between p-3">
-                <div>
-                    <h1 style="font-size: 32px" class="white">SHG Details</h1>
-                    <p style="font-size: 18px" class="white">
-                        Founder: {{ shg.created_by.name }} <br>
-                        Minimum Contribution: Rs. {{ shg.min_contribution }} <br>
-                        Pool: Rs. {{ shg.pool }} <br>
-                        Members: {{ shg.members.count }} <br>
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">{{ shg.name }}</h1>
+    <div class="backdrop w-75">
+        <div class="d-flex flex-row justify-content-between p-3">
+            <div>
+                <h1 style="font-size: 32px" class="white">SHG Details</h1>
+                <p style="font-size: 18px" class="white">
+                    Founder: {{ shg.created_by.name }} <br>
+                    Minimum Contribution: Rs. {{ shg.min_contribution }} <br>
+                    Pool: Rs. {{ shg.pool }} <br>
+                    Members: {{ shg.members.count }} <br>
 
-                        Target Members: {{ shg.target }} <br>
+                    Target Members: {{ shg.target }} <br>
 
-                        Created on: {% for c in shg.shgcontribution_set.all %}
-                        	{% if c.user.id == shg.created_by.id %}
-                        		{{  c.date }}
-                        	{% endif %}
-                        {% endfor %}
-                    </p>
+                    Created on: {% for c in shg.shgcontribution_set.all %}
+                    {% if c.user.id == shg.created_by.id %}
+                    {{ c.date }}
+                    {% endif %}
+                    {% endfor %}
+                </p>
 
-                    <div class="d-flex flex-row">
-                        <a href="{% url 'shg_members' shg_id=shg.pk %}">
+                <div class="d-flex flex-row">
+                    <a href="{% url 'shg_members' shg_id=shg.pk %}">
                         <button type="button" class="btn btn-primary">Members</button>
-                        </a>
-                        {% if not is_member %}
-                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#popupModal">Join</button>
-                        {% endif %}
-
-                    </div>
-                </div>
-                <div>
-                    <canvas id="contri-chart"></canvas>
-                </div>
-            </div>
-            <table class="table w-75 m-3">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Member Name</th>
-                        <th scope="col">Contribution</th>
-                    </tr>
-                </thead>
-                {% for member in shg.shgcontribution_set.all %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ member.user.name }}</td>
-                        <td>Rs. {{ member.amount }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
-
-    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="popupModalLabel">Join {{ shg.name }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <form method="POST" action="{% url 'join_shg' %}" id="join_form" class="form w-100 mt-3 formx d-flex flex-column justify-content-center align-items-center">
-                    {% csrf_token %}
-                    <input type="hidden" name="shg_id" value="{{ shg.id }}">
-                    <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
-                        <label style="text-align: center" for="amt">Amount to contribute (Min. Rs. {{ shg.min_contribution }})</label>
-                        <input type="number" name="amt" class="form-control" id="amt" placeholder="Enter amount" required>
-                    </div>
-                </form>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="document.querySelector('#join_form').submit()">Join</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </a>
+                    {% if not is_member %}
+                    <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
+                        data-bs-target="#popupModal">Join
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
+                        data-bs-target="#popupModal2">Contribute
+                    </button>
+                    {% endif %}
                 </div>
             </div>
+            <div>
+                <canvas id="contri-chart"></canvas>
+            </div>
+        </div>
+        <table class="table w-75 m-3">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Member Name</th>
+                    <th scope="col">Contribution</th>
+                </tr>
+            </thead>
+            {% for member in shg.shgcontribution_set.all %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ member.user.name }}</td>
+                <td>Rs. {{ member.amount }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupModalLabel">Join {{ shg.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="POST" action="{% url 'join_shg' %}" id="join_form"
+                class="form w-100 mt-3 formx d-flex flex-column justify-content-center align-items-center">
+                {% csrf_token %}
+                <input type="hidden" name="shg_id" value="{{ shg.id }}">
+                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                    <label style="text-align: center" for="amt">Amount to contribute (Min.
+                        Rs. {{ shg.min_contribution }})</label>
+                    <input type="number" name="amt" class="form-control" id="amt" placeholder="Enter amount" required>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                    onclick="document.querySelector('#join_form').submit()">Join
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if is_member %}
+<div class="modal fade" id="popupModal2" tabindex="-1" aria-labelledby="popupModal2Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="popupModal2Label">Contribute to {{ shg.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <script>
-        new Chart(document.getElementById('contri-chart'), {
-            type: 'pie',
-            data: {
-                datasets: [{
-                    data: [
-                        {% for member in shg.shgcontribution_set.all %}
+            <form method="POST" action="{% url 'contribute' shg_id=shg.id %}" id="contri_form"
+                class="form w-100 mt-3 formx d-flex flex-column justify-content-center align-items-center">
+                {% csrf_token %}
+                <input type="hidden" name="shg_id" value="{{ shg.id }}">
+                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                    <label style="text-align: center" for="contri">Amount to contribute</label>
+                    <input type="number" name="contri" class="form-control" id="contri" placeholder="Enter amount"
+                        required>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                    onclick="document.querySelector('#contri_form').submit()">Contribute
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    new Chart(document.getElementById('contri-chart'), {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [
+                    {% for member in shg.shgcontribution_set.all %}
                             {{ member.amount }},
                         {% endfor %}
                     ]
                 }],
 
-                labels: [
-                    {% for member in shg.members.all %}
-                        '{{ member.name }}',
-                    {% endfor %}
+        labels: [
+        {% for member in shg.members.all %}
+    '{{ member.name }}',
+        {% endfor %}
                 ],
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return 'Rs. ' + tooltipItem.raw;
-                            }
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Contributions of Members',
-                        color: '#fff',
-                        font: {
-                            size: 20
-                        }
+    options: {
+        responsive: true,
+            plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (tooltipItem) {
+                        return 'Rs. ' + tooltipItem.raw;
                     }
                 }
+            },
+            title: {
+                display: true,
+                    text: 'Contributions of Members',
+                        color: '#fff',
+                            font: {
+                    size: 20
+                }
             }
+        }
+    }
         });
 
 
-    </script>
+</script>
 {% endblock %}
