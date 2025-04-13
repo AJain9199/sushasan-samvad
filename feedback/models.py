@@ -215,6 +215,7 @@ class SHGLoan(models.Model):
     
     def approve(self):
         self.status = self.Status.ACTIVE
+        approval_date = django.utils.timezone.now()
         amortization_schedule = add_amortzn_dates(amortization_schedule, self.shg.interest_model, django.utils.timezone.now())
     
     @property
@@ -383,3 +384,9 @@ class SelfHelpGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=300)
+    date = models.DateField(default=django.utils.timezone.now)

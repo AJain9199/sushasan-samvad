@@ -340,8 +340,9 @@ def assign_loan_req_status(request):
         
         status = int(request.POST['status'])
 
-        if (status == 1):
+        if status == 1:
             loan.approve()
+            
         else:
             loan.status = status;
         loan.save()

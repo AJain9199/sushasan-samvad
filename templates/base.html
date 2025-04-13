@@ -43,10 +43,8 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent"><!--navbar starting-->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <ul class="nav nav-underline">
+        <div class="collapse navbar-collapse text-primary" id="navbarSupportedContent"><!--navbar starting-->
+            <ul class="navbar-nav nav nav-underline me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{% url 'index' %}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -55,50 +53,62 @@
                                 </svg>&nbsp;&nbsp;Home</a><!--home-->
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="{% url 'community' %}" aria-current="page">Community Connect</a>
+                            <a class="nav-link text-primary" href="{% url 'community' %}" aria-current="page">Community Connect</a>
                         </li>
                         {% if request.user.is_authenticated %}
                             {% if dst_admim %}
                                 <li class="nav-item">
-                                    <a class="nav-link"
+                                    <a class="nav-link text-primary"
                                        href="{% url 'district' request.user.district.id %}">&nbsp;District</a>
                                 </li>
                             {% elif vil_admin %}
                                 <li class="nav-item">
-                                    <a class="nav-link"
+                                    <a class="nav-link text-primary"
                                        href="{% url 'village' request.user.village.id %}">&nbsp;Village</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link"
+                                    <a class="nav-link text-primary"
                                        href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'schedule_meeting' %}">&nbsp;Schedule Meeting</a>
+                                <li class="nav-item text-primary">
+                                    <a class="nav-link text-primary" href="{% url 'schedule_meeting' %}">&nbsp;Schedule Meeting</a>
                                 </li>
                             {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                    href="{% url 'village' request.user.village.id %}">&nbsp;Village</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link"
-                                       href="{% url 'agendas' %}">&nbsp;Important Agendas</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'share_grievance' %}">&nbsp;Shikayat Forum</a>
-                                </li>
-                            {% endif %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">&nbsp;Log out</a>
+                            <li class="nav-item dropdown text-primary">
+                                <a class="nav-link text-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Village
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'village' request.user.village.id %}">Village Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'agendas' %}">Important Agendas</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'share_grievance' %}">Shikayat Forum</a></li>
+                                </ul>
                             </li>
+                            <li class="nav-item text-primary">
+                                <a class="nav-link text-primary" href="{% url 'shgs' %}">&nbsp;SHGs</a>
+                            </li>
+                            {% endif %}
+
+                                                    </ul>
                         {% else %}
                         <ul class="nav justify-content-end">
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'register' %}">&nbsp;Register</a>
+                                <a class="nav-link text-primary" href="{% url 'register' %}">&nbsp;Register</a>
                             </li>
                         </ul>
                         {% endif %}
+                        <ul class="navbar-nav">
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="{% url 'logout' %}">&nbsp;Log out</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="{% url 'login' %}">&nbsp;Log in</a>
+                        </li>
+                        {% endif %}
                     </ul>
+                    
                 </li>
             </ul>
         </div>
