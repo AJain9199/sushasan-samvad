@@ -8,6 +8,7 @@
 
 <div class="w-100 d-flex flex-column justify-content-center align-items-center">
     <h1 class="m-3">Loan requests- {{ shg.name }}</h1>
+    {% if loans %}
     <table class="table w-75 m-3 rounded-3 overflow-hidden">
         <thead>
             <tr>
@@ -92,6 +93,9 @@
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <h4>No loan requests open.</h4>
+    {% endif %}
 
 </div>
 

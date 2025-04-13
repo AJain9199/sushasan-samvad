@@ -39,6 +39,11 @@
                     <a href="{% url 'loan_request' shg_id=shg.id %}"><button type="button" class="btn btn-primary mx-3"> Request a Loan
                     </button></a>
                     {% endif %}
+
+                    {% if is_admin %}
+                        <a href="{% url 'loan_requests' shg_id=shg.id %}"><button type="button" class="btn btn-primary mx-3"> View Open Loan Requests
+                            </button></a>
+                    {% endif %}
                 </div>
             </div>
             <div>

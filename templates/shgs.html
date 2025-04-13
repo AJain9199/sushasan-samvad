@@ -5,6 +5,14 @@ SHGs in Your Village/District
 {% block body %}
 <div class="w-100 d-flex flex-column justify-content-center align-items-center">
     <h1 class="m-3">SHGs in {{ request.user.village.name }}</h1>
+    {% if shgs %}
+    <div class="d-flex flex-row justify-content-end align-items-end w-75">
+        <a href="{% url 'create_shg' %}">
+            <button class="btn btn-primary">
+                Create your own
+            </button>
+        </a>
+    </div>
     <table class="table w-75 m-3">
         <thead>
             <tr>
@@ -27,5 +35,8 @@ SHGs in Your Village/District
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <h3>No SHGs found in Dhanas. <a href="{% url 'create_shg' %}">Create your own.</a></h3>
+    {% endif %}
 </div>
 {% endblock %}

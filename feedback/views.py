@@ -216,7 +216,7 @@ def create_shg(request):
     elif request.method == 'POST':
         form = SHGForm(request.POST, request=request)
         shg = form.save()
-        return HttpResponseRedirect(reverse('village', args=(request.user.village.id,)))
+        return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
 
 
 def shgs(request):
