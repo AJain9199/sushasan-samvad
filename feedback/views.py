@@ -332,3 +332,17 @@ def contribute(request, shg_id):
         return HttpResponseRedirect(reverse('shg', args=(shg.id,)))
     else:
         return JsonResponse({'status': 'error'})
+
+
+def assign_loan_req_status(request):
+    if request.method == 'POST':
+        loan = SHGLoan.objects.get(id=request.POST['loan_id'])
+        
+        status = int(request.POST['status'])
+
+        if (status == 1):
+            loan.approve()
+        else:
+            loan.status = status;
+        loan.save()
+        return JsonResponse({'status': 'success'})
