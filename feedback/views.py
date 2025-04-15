@@ -1,9 +1,10 @@
 import random
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, LoginForm, SHGForm, SHGLoanRequestForm
+from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, \
+    LoginForm, SHGForm, SHGLoanRequestForm, ExternLinkageForm
 from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User, \
-    SelfHelpGroup, SHGContribution, SHGLoan, calculate_repayment_terms
+    SelfHelpGroup, SHGContribution, SHGLoan, calculate_repayment_terms, ExternalLinkageBank
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -353,3 +354,22 @@ def loan_request_details(request, loan_id):
     if request.method == 'GET':
         loan = SHGLoan.objects.get(id=loan_id)
         return render(request, 'loan_req.html', {'loan_request': loan})
+
+
+def linkage_banks(request, shg_id):
+    return render(request, 'banks.html', {'banks': ExternalLinkageBank.objects.all(), 'shg_id': shg_id})
+
+
+def apply_linkage(request, shg_id, bank_id):
+    if request.method == 'GET':
+        form = ExternLinkageForm()
+        return render(request, 'apply_linkage.html', {'form': form})
+    elif request.method == 'POST':
+        form = ExternLinkageForm(request.POST)
+        linkage = form.save(commit=False)
+        linkage.shg = SelfHelpGroup.objects.get(id=shg_id)
+        linkage.bank = ExternalLinkageBank.objects.get(id=bank_id)
+        linkage.save()
+
+        messages.success(request, "Your linkage application has been submitted successfully. The bank will contact the SHG soon.")
+        return HttpResponseRedirect(reverse('shg', args=(shg_id,)))

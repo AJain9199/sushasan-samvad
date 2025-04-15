@@ -2,7 +2,8 @@ import random
 
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
-from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup, SHGContribution, SHGLoan
+from .models import User, Meeting, MeetingSuggestion, Grievance, ScheduleMeeting, SelfHelpGroup, SHGContribution, \
+    SHGLoan, LinkageApplication
 from django import forms
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group
@@ -103,3 +104,9 @@ class SHGLoanRequestForm(ModelForm):
     class Meta:
         model = SHGLoan
         fields = ('principal', 'purpose', 'duration', 'repayment_freq', 'interest_rate')
+
+
+class ExternLinkageForm(ModelForm):
+    class Meta:
+        model = LinkageApplication
+        fields = ('principal', 'duration', 'repayment_freq', 'interest_rate', 'purpose')

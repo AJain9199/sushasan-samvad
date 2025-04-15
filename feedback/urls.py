@@ -30,4 +30,6 @@ urlpatterns = [
     path('shg/join', views.join_shg, name='join_shg'),
     path('shg/<int:shg_id>/contribute', views.contribute, name='contribute'),
     path('shg/loan_request_details/<int:loan_id>', views.loan_request_details, name='loan-request-details'),
+    path('shg/<int:shg_id>/linkage_banks/', views.linkage_banks, name='linkage_banks'),
+    path('shg/<int:shg_id>/apply_linkage/<int:bank_id>', views.apply_linkage, name='apply_linkage'),
 ]

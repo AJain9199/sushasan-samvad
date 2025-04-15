@@ -165,9 +165,7 @@ class SHGContribution(models.Model):
         unique_together = ('user', 'shg')
 
 
-class SHGLoan(models.Model):
-    REDUCING_FACTOR = 0.55
-
+class GenericLoan(models.Model):
     class RepaymentFrequency(models.IntegerChoices):
         BIWEEKLY = 0, _("Biweekly")
         WEEKLY = 1, _("Weekly")
@@ -183,12 +181,11 @@ class SHGLoan(models.Model):
 
     principal = models.FloatField(_("Principal"))
     date = models.DateField(default=django.utils.timezone.now)
-    shg = models.ForeignKey('SelfHelpGroup', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     purpose = models.TextField(_("Purpose"))
     approval_date = models.DateField(null=True, blank=True)
     duration = models.IntegerField(_("Duration (in months)"))
-    repayment_freq = models.IntegerField(_("Repayment Frequency"), choices=RepaymentFrequency.choices, default=RepaymentFrequency.MONTHLY)
+    repayment_freq = models.IntegerField(_("Repayment Frequency"), choices=RepaymentFrequency.choices,
+                                         default=RepaymentFrequency.MONTHLY)
     interest_rate = models.FloatField(_("Annual Interest Rate"))
 
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
@@ -196,29 +193,12 @@ class SHGLoan(models.Model):
     total_payable = models.FloatField(_("Total Payable"), default=0)
     amortization_schedule = models.JSONField(default=list, blank=True, encoder=DjangoJSONEncoder)
 
-    def save(
-        self,
-        force_insert = ...,
-        force_update = ...,
-        using = ...,
-        update_fields = ...,
-    ):
-        if not self.amortization_schedule:
-            self.total_payable, self.amortization_schedule = calculate_repayment_terms(
-                self.shg.interest_model,
-                self.principal,
-                self.duration,
-                self.interest_rate,
-                self.repayment_freq
-            )
-        super().save()
-    
     def approve(self):
+        add_amortzn_dates(self.amortization_schedule, self.repayment_freq, django.utils.timezone.now())
         self.status = self.Status.ACTIVE
         self.approval_date = django.utils.timezone.now()
-        add_amortzn_dates(self.amortization_schedule, self.shg.interest_model, django.utils.timezone.now())
         self.save()
-    
+
     @property
     def amount_paid(self):
         if self.status != self.Status.ACTIVE:
@@ -238,12 +218,39 @@ class SHGLoan(models.Model):
         return self.total_payable - self.principal
 
     @property
-    def percent_of_pool(self):
-        return round((self.principal/self.shg.pool) * 100, 1)
-
-    @property
     def is_approved(self):
         return self.status == self.Status.ACTIVE
+
+    class Meta:
+        abstract = True
+
+
+class SHGLoan(GenericLoan):
+    REDUCING_FACTOR = 0.55
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shg = models.ForeignKey('SelfHelpGroup', on_delete=models.CASCADE)
+
+    def save(
+        self,
+        force_insert = ...,
+        force_update = ...,
+        using = ...,
+        update_fields = ...,
+    ):
+        if not self.amortization_schedule:
+            self.total_payable, self.amortization_schedule = calculate_repayment_terms(
+                self.shg.interest_model,
+                self.principal,
+                self.duration,
+                self.interest_rate,
+                self.repayment_freq
+            )
+        super().save()
+
+    @property
+    def percent_of_pool(self):
+        return round((self.principal/self.shg.pool) * 100, 1)
 
     @property
     def get_amortization(self):
@@ -399,8 +406,14 @@ class SelfHelpGroup(models.Model):
             p += contri.amount
         
         for loan in SHGLoan.objects.filter(shg_id=self.id):
-            p -= loan.principal
-            p += loan.amount_paid
+            if loan.status == GenericLoan.Status.ACTIVE:
+                p -= loan.principal
+                p += loan.amount_paid
+
+        for linkage in self.linkageapplication_set.all():
+            if linkage.status == GenericLoan.Status.ACTIVE:
+                p += linkage.principal
+                p -= linkage.amount_paid
 
         return p
 
@@ -412,3 +425,42 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=300)
     date = models.DateField(default=django.utils.timezone.now)
+
+
+class ExternalLinkageBank(models.Model):
+    name = models.CharField(_('Bank name'), max_length=200)
+    bookkeeping_requirement = models.DurationField(_("Bookkeeping Requirement for Applicant SHGs"), default=timedelta(days=180))
+    member_requirement = models.IntegerField(_("Minimum Number of Members"), default=5)
+    pool_requirement = models.IntegerField(_("Minimum Pool"), default=0)
+    avg_interest_rate = models.FloatField(_("Average Interest Rate"))
+    min_loan = models.IntegerField(_("Minimum Loan Amount"), default=0)
+    review_time = models.DurationField(_("Typical Review Time"), default=timedelta(days=30))
+
+    applications = models.ManyToManyField(SelfHelpGroup, blank=True, related_name='applications', through='LinkageApplication')
+    image = models.ImageField(upload_to='bank_images', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class LinkageApplication(GenericLoan):
+    shg = models.ForeignKey(SelfHelpGroup, on_delete=models.CASCADE)
+    bank = models.ForeignKey(ExternalLinkageBank, on_delete=models.CASCADE)
+
+    def save(
+        self,
+        force_insert = ...,
+        force_update = ...,
+        using = ...,
+        update_fields = ...,
+    ):
+        if not self.amortization_schedule:
+            self.total_payable, self.amortization_schedule = calculate_repayment_terms(
+                SelfHelpGroup.InterestModel.EMI,
+                self.principal,
+                self.duration,
+                self.interest_rate,
+                self.repayment_freq
+            )
+        super().save()
+

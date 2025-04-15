@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-{{ shg.name }}
+    {{ shg.name }}
 {% endblock %}
 {% block body %}
 
@@ -112,31 +112,52 @@
                         {% if c.user.id == shg.created_by.id %}
                             {{ c.date }}
                         {% endif %}
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">{{ shg.name }}</h1>
+        <div class="backdrop w-75">
+            <div class="d-flex flex-row justify-content-between p-3">
+                <div>
+                    <h1 style="font-size: 32px" class="white">SHG Details</h1>
+                    <p style="font-size: 18px" class="white">
+                        Founder: {{ shg.created_by.name }} <br>
+                        Minimum Contribution: Rs. {{ shg.min_contribution }} <br>
+                        Pool: Rs. {{ shg.pool }} <br>
+                        Members: {{ shg.members.count }} <br>
+
+                        Target Members: {{ shg.target }} <br>
+
+                        Created on: {% for c in shg.shgcontribution_set.all %}
+                        {% if c.user.id == shg.created_by.id %}
+                            {{ c.date }}
+                        {% endif %}
                     {% endfor %}
-                </p>
+                    </p>
 
-                <div class="d-flex flex-wrap mt-3">
-                    <a href="{% url 'shg_members' shg_id=shg.pk %}">
-                        <button type="button" class="btn btn-primary mb-2 me-2">Members</button>
-                    </a>
-
-                    {% if not is_member %}
-                    <button type="button" class="btn btn-primary mb-2 me-2" data-bs-toggle="modal"
-                        data-bs-target="#popupModal">Join
-                    </button>
-                    {% else %}
-                    <button type="button" class="btn btn-primary mb-2 me-2" data-bs-toggle="modal"
-                        data-bs-target="#popupModal2">Contribute</button>
-
-                    <a href="{% url 'loan_request' shg_id=shg.id %}">
-                        <button type="button" class="btn btn-primary mb-2 me-2">Request a Loan</button>
-                    </a>
-                    {% endif %}
+                    <div class="d-flex flex-row">
+                        <a href="{% url 'shg_members' shg_id=shg.pk %}">
+                            <button type="button" class="btn btn-primary">Members</button>
+                        </a>
+                        {% if not is_member %}
+                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
+                                    data-bs-target="#popupModal">Join
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
+                                    data-bs-target="#popupModal2">Contribute
+                            </button>
+                            <a href="{% url 'loan_request' shg_id=shg.id %}">
+                                <button type="button" class="btn btn-primary mx-3"> Request a Loan
+                                </button>
+                            </a>
+                        {% endif %}
 
                     {% if is_admin %}
                     <a href="{% url 'loan_requests' shg_id=shg.id %}">
                         <button type="button" class="btn btn-primary mb-2 me-2">View Open Loan Requests</button>
-                    </a>
+                    </a><a href="{% url 'linkage_banks' shg_id=shg.id %}">
+                                <button type="button" class="btn btn-primary mx-3"> Apply for Bank Linkage
+                                </button>
+                            </a>
                     {% endif %}
                 </div>
             </div>
@@ -168,98 +189,123 @@
     </div>
 </div>
 
-<!-- Join Modal -->
-<div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Join {{ shg.name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="{% url 'join_shg' %}" id="join_form" class="form p-3">
-                {% csrf_token %}
-                <input type="hidden" name="shg_id" value="{{ shg.id }}">
-                <div class="form-group mb-3">
-                    <label for="amt">Amount to contribute (Min. ₹{{ shg.min_contribution }})</label>
-                    <input type="number" name="amt" class="form-control" id="amt" placeholder="Enter amount" required>
+    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupModalLabel">Join {{ shg.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
+                <form method="POST" action="{% url 'join_shg' %}" id="join_form"
+                      class="form w-100 mt-3 formx d-flex flex-column justify-content-center align-items-center">
+                    {% csrf_token %}
+                    <input type="hidden" name="shg_id" value="{{ shg.id }}">
+                    <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                        <label style="text-align: center" for="amt">Amount to contribute (Min.
+                            Rs. {{ shg.min_contribution }})</label>
+                        <input type="number" name="amt" class="form-control" id="amt" placeholder="Enter amount"
+                               required>
+                    </div>
+                </form>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="document.querySelector('#join_form').submit()">Join</button>
+                    <button type="button" class="btn btn-primary"
+                            onclick="document.querySelector('#join_form').submit()">Join
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Contribute Modal -->
-{% if is_member %}
-<div class="modal fade" id="popupModal2" tabindex="-1" aria-labelledby="popupModal2Label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Contribute to {{ shg.name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="{% url 'contribute' shg_id=shg.id %}" id="contri_form" class="form p-3">
-                {% csrf_token %}
-                <input type="hidden" name="shg_id" value="{{ shg.id }}">
-                <div class="form-group mb-3">
-                    <label for="contri">Amount to contribute</label>
-                    <input type="number" name="contri" class="form-control" id="contri" placeholder="Enter amount" required>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="document.querySelector('#contri_form').submit()">Contribute</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
-{% endif %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    new Chart(document.getElementById('contri-chart'), {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [
-                    {% for member in shg.shgcontribution_set.all %}
-                        {{ member.amount }},
+    {% if is_member %}
+        <div class="modal fade" id="popupModal2" tabindex="-1" aria-labelledby="popupModal2Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="popupModal2Label">Contribute to {{ shg.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form method="POST" action="{% url 'contribute' shg_id=shg.id %}" id="contri_form"
+                          class="form w-100 mt-3 formx d-flex flex-column justify-content-center align-items-center">
+                        {% csrf_token %}
+                        <input type="hidden" name="shg_id" value="{{ shg.id }}">
+                        <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                            <label style="text-align: center" for="contri">Amount to contribute</label>
+                            <input type="number" name="contri" class="form-control" id="contri"
+                                   placeholder="Enter amount"
+                                   required>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary"
+                                onclick="document.querySelector('#contri_form').submit()">Contribute
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        new Chart(document.getElementById('contri-chart'), {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [
+                        {% for member in shg.shgcontribution_set.all %}
+                            {{ member.amount }},
+                        {% endfor %}
+
+                        {% for linkage in shg.linkageapplication_set.all %}
+                            {% if linkage.is_approved %}
+                            {{ linkage.principal }},
+                            {% endif %}
+                        {% endfor %}
+
+                    ]
+                }],
+
+                labels: [
+                    {% for member in shg.members.all %}
+                        '{{ member.name }}',
+                    {% endfor %}
+                    {% for linkage in shg.linkageapplication_set.all %}
+                        {% if linkage.is_approved %}
+                        'Loan from {{ linkage.bank.name }}',
+                        {% endif %}
                     {% endfor %}
                 ],
-                backgroundColor: [
-                    '#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#2ecc71',
-                    '#3498db', '#f39c12', '#9b59b6', '#1abc9c', '#e74c3c'
-                ]
-            }],
-            labels: [
-                {% for member in shg.members.all %}
-                    '{{ member.name }}',
-                {% endfor %}
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return '₹' + tooltipItem.raw;
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return 'Rs. ' + tooltipItem.raw;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Contributions of Members',
+                        color: '#fff',
+                        font: {
+                            size: 20
                         }
                     }
-                },
-                title: {
-                    display: true,
-                    text: 'Contributions of Members',
-                    color: '#fff',
-                    font: { size: 20 }
                 }
             }
-        }
-    });
-</script>
+        });
 
+
+    </script>
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+	Create new Self-Help Group
+{% endblock %}
+
+{% load widget_tweaks %}
+{% block body %}
+	<div class="d-flex flex-column justify-content-center w-100 align-items-center mt-5">
+        <h1 class="_heading" style="font-size: 58px">Apply for a linkage loan</h1>
+        <h2 class="_subheading" style="font-size: 28px">Fill in the details below</h2>
+        <form method="post" class="form w-100 formx d-flex flex-column justify-content-center align-items-center">
+            {% csrf_token %}
+            {{ form.media.js }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <div class="w-75 mb-3" id="div_{{ field.id_for_label }}">
+                    <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    {% for error in field.errors %}
+                        <span class="help-block">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-ok"></span> Apply
+            </button>
+        </form>
+    </div>
+{% endblock %}
