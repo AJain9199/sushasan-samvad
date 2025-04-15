@@ -81,7 +81,7 @@ class SHGForm(ModelForm):
 
     class Meta:
         model = SelfHelpGroup
-        fields = ('name', 'startup_amount', 'min_contribution', 'target', 'description')
+        fields = ('name', 'startup_amount', 'min_contribution', 'interest_model', 'target', 'description')
 
 
 class SHGLoanRequestForm(ModelForm):

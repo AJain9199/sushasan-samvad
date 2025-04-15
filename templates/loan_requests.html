@@ -80,7 +80,7 @@
                                             {% endfor %}
                                             <tr>
                                                 <th scope="row">3</th>
-                                                <td>...</td>
+                                                <td><a href="{% url 'loan-request-details' loan_id=loan.id %}">...</a></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -100,30 +100,6 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-            // Create a formatter for Indian Rupees
-            const formatter = new Intl.NumberFormat('en-IN', {
-                style: 'currency',
-                currency: 'INR',
-                minimumFractionDigits: 2
-            });
-
-            // Select all elements with class "currency"
-            const currencyElements = document.querySelectorAll('.currency');
-
-            // Format each element's content
-            currencyElements.forEach(function (element) {
-                // Get the numerical value (strip any existing currency symbols or commas)
-                const value = parseFloat(element.textContent.replace(/[₹,\s]/g, ''));
-
-                // Skip if the content isn't a valid number
-                if (isNaN(value)) return;
-
-                // Format as INR using Intl.NumberFormat and update the element
-                element.textContent = formatter.format(value);
-            });
-        });
-
     async function update_status(loan_id, status) {
         let send_data = new FormData();
         send_data.append("loan_id", loan_id);

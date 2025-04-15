@@ -28,5 +28,6 @@ urlpatterns = [
     path('shg/update_loan_request', views.assign_loan_req_status, name='loan_status'),
     path('shg/update_role', views.update_role, name='update_role'),
     path('shg/join', views.join_shg, name='join_shg'),
-    path('shg/<str:shg_id>/contribute', views.contribute, name='contribute'),
+    path('shg/<int:shg_id>/contribute', views.contribute, name='contribute'),
+    path('shg/loan_request_details/<int:loan_id>', views.loan_request_details, name='loan-request-details'),
 ]

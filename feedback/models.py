@@ -194,7 +194,7 @@ class SHGLoan(models.Model):
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
     total_payable = models.FloatField(_("Total Payable"), default=0)
-    amortization_schedule = models.JSONField(default=list, blank=True)
+    amortization_schedule = models.JSONField(default=list, blank=True, encoder=DjangoJSONEncoder)
 
     def save(
         self,
@@ -215,8 +215,9 @@ class SHGLoan(models.Model):
     
     def approve(self):
         self.status = self.Status.ACTIVE
-        approval_date = django.utils.timezone.now()
-        amortization_schedule = add_amortzn_dates(amortization_schedule, self.shg.interest_model, django.utils.timezone.now())
+        self.approval_date = django.utils.timezone.now()
+        add_amortzn_dates(self.amortization_schedule, self.shg.interest_model, django.utils.timezone.now())
+        self.save()
     
     @property
     def amount_paid(self):
@@ -224,9 +225,13 @@ class SHGLoan(models.Model):
             return 0
         p = 0
         for installment in self.amortization_schedule:
-            if installment[3] < django.utils.timezone.now():
+            if datetime.fromisoformat(installment[3]) < django.utils.timezone.now():
                 p += installment[2]
         return p
+
+    @property
+    def remaining_balance(self):
+        return self.total_payable - self.amount_paid
 
     @property
     def interest(self):
@@ -235,6 +240,23 @@ class SHGLoan(models.Model):
     @property
     def percent_of_pool(self):
         return round((self.principal/self.shg.pool) * 100, 1)
+
+    @property
+    def is_approved(self):
+        return self.status == self.Status.ACTIVE
+
+    @property
+    def get_amortization(self):
+        amort = []
+        if self.status != self.Status.ACTIVE:
+            return [(sched, False) for sched in self.amortization_schedule]
+        for sched in self.amortization_schedule:
+            if django.utils.timezone.now() >= datetime.fromisoformat(sched[3]):
+                amort.append((sched, True))
+            else:
+                amort.append((sched, False))
+        return amort
+
 
 def calculate_params(duration, interest_rate, repayment_freq):
     # Calculate the number of installments and the period interest rate

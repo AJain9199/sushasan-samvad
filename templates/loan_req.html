@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% block title %}
+    Loan Request #{{ loan_request.id }}
+{% endblock %}
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'shg' shg_id=loan_request.shg.id %}">SHG</a></li>
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'loan_requests' shg_id=loan_request.shg.id %}">Loans</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Loan Details</li>
+                    </ol>
+                </nav>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="mb-0">Loan Details</h1>
+                    <div>
+                        <span class="badge bg-success p-2 fs-6">{{ loan_request.get_status_display }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Primary Loan Information -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Primary Loan Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Member Name:</label>
+                                    <p class="mb-1">{{ loan_request.user.name }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">SHG Name:</label>
+                                    <p class="mb-1">{{ loan_request.shg.name }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Principal Amount:</label>
+                                    <p class="mb-1 currency">{{ loan_request.principal }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Interest Rate:</label>
+                                    <p class="mb-1">{{ loan_request.interest_rate }}% per annum</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Total Payable:</label>
+                                    <p class="mb-1 currency">{{ loan_request.total_payable }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Interest Amount:</label>
+                                    <p class="mb-1 currency">{{ loan_request.interest }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Duration:</label>
+                                    <p class="mb-1">{{ loan_request.duration }} months</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Repayment Frequency:</label>
+                                    <p class="mb-1">{{ loan_request.get_repayment_freq_display }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Application Date:</label>
+                                    <p class="mb-1">{{ loan_request.date|date:"F j, Y" }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="fw-bold">Approval Date:</label>
+                                    <p class="mb-1">
+                                        {% if loan_request.is_approved %}
+                                            {{ loan_request.approval_date|date:"F j, Y" }}
+                                        {% else %}
+                                            Not Approved Yet
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">Payment Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="fw-bold">Amount Paid:</label>
+                            <h4 class="text-success mb-1 currency">{{ loan_request.amount_paid }}</h4>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">Remaining Balance:</label>
+                            <h4 class="text-danger mb-1 currency">{{ loan_request.remaining_balance }}</h4>
+                        </div>
+                        <div class="progress mb-3" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 aria-valuenow="{{ loan_request.amount_paid }}" aria-valuemin="0"
+                                 aria-valuemax="{{ loan_request.total_payable }}"><span
+                                    class="currency">{{ loan_request.amount_paid }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Purpose -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Loan Purpose</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ loan_request.purpose }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Amortization Schedule -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Repayment Schedule</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Payment No.</th>
+                                    <th>Due Date</th>
+                                    <th>Principal</th>
+                                    <th>Interest</th>
+                                    <th>Total Payment</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for payment in loan_request.get_amortization %}
+                                    <tr class="{% if payment.1 %}
+                                    	table-success
+                                    {% endif %}">
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ payment.0.3|date:"F j, Y" }}</td>
+                                        <td class="currency">{{ payment.0.0 }}</td>
+                                        <td class="currency">{{ payment.0.1 }}</td>
+                                        <td class="currency">{{ payment.0.2 }}</td>
+                                        <td>
+                                            {% if payment.1 %}
+                                                <span class="badge bg-success">Paid</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Pending</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot class="table-dark">
+                                <tr>
+                                    <td colspan="2" class="text-end fw-bold">Total:</td>
+                                    <td>₹25,000.00</td>
+                                    <td>₹1,661.00</td>
+                                    <td>₹26,661.00</td>
+                                    <td></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -284,7 +284,7 @@ def loan_request(request, shg_id):
             loan_req.shg = SelfHelpGroup.objects.get(id=shg_id)
             loan_req.save()
             messages.success(request, f"Your loan request (ID: {loan_req.id}) has been submitted successfully.")
-            return HttpResponseRedirect(reverse('shg', args=(shg_id,)))
+            return HttpResponseRedirect(reverse('loan-request-details', args=(loan_req.id,)))
         else:
             shg = SelfHelpGroup.objects.get(id=shg_id)
             return render(request, 'loan_request.html', {'shg_form': form, 'shg': shg})
@@ -347,3 +347,9 @@ def assign_loan_req_status(request):
             loan.status = status;
         loan.save()
         return JsonResponse({'status': 'success'})
+
+
+def loan_request_details(request, loan_id):
+    if request.method == 'GET':
+        loan = SHGLoan.objects.get(id=loan_id)
+        return render(request, 'loan_req.html', {'loan_request': loan})
