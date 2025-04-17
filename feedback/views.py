@@ -1,7 +1,6 @@
 import datetime
 import random
 from operator import itemgetter
-
 import django
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
@@ -279,7 +278,7 @@ def shg(request, shg_id):
 
     for bank_loan in shg.linkageapplication_set.filter(status=GenericLoan.Status.ACTIVE):
         transaction_history.append([
-            False,
+            True,
             bank_loan.bank.name,
             bank_loan.principal,
             bank_loan.approval_date,
@@ -287,9 +286,9 @@ def shg(request, shg_id):
         ])
 
         for repayments in bank_loan.amortization_schedule:
-            if datetime.datetime.fromisoformat(repayments[3]) < datetime.datetime.now():
+            if datetime.datetime.fromisoformat(repayments[3]) < django.utils.timezone.now():
                 transaction_history.append([
-                    True,
+                    False,
                     bank_loan.bank.name,
                     repayments[2],
                     datetime.datetime.fromisoformat(repayments[3]).date(),

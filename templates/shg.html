@@ -159,15 +159,29 @@
                         <th scope="col">Transaction with</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Description</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for record in history %}
                         <tr class="{% if record.0 %}table-success{% else %}table-danger{% endif %}">
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ record.1 }}</td>
+                            <td>{% if record.0 %}From: {% else %}To: {% endif %}{{ record.1 }}</td>
                             <td class="currency">{{ record.2 }}</td>
                             <td>{{ record.3|date:"F j, Y" }}</td>
+                            <td>
+                                {% if record.4 == 1 %}
+                                    Member Contribution
+                                {% elif record.4 == 2 %}
+                                    Loan Approved
+                                {% elif record.4 == 3 %}
+                                    Loan Repayment
+                                {% elif record.4 == 4 %}
+                                    Bank Loan
+                                {% elif record.4 == 5 %}
+                                    Bank Loan Repayment
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

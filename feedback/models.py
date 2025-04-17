@@ -344,8 +344,8 @@ def calculate_repayment_terms(interest_model, principal, duration, interest_rate
             total_payable += interest_payment
             remaining_principal -= principal_payment
 
-            amortization_schedule.append([
-                round(principal_payment, 2), round(2, interest_payment), round(2, installment_amount)])
+            amortization_schedule.append([[
+                round(principal_payment, 2), round(2, interest_payment), round(2, installment_amount)]])
     elif shg_int_model == SelfHelpGroup.InterestModel.FLAT_DECLINING:
         total_interest = principal * prd_rate * ins_count * SHGLoan.REDUCING_FACTOR
         total_payable = principal + total_interest
@@ -353,11 +353,11 @@ def calculate_repayment_terms(interest_model, principal, duration, interest_rate
         principal_installment = principal / ins_count
         interest_installment = total_interest / ins_count
 
-        amortization_schedule = [
+        amortization_schedule = [[
                                     round(principal_installment, 2),
                                     round(interest_installment, 2),
                                     round(total_installment, 2),
-                                ] * ins_count
+                                ]] * ins_count
     elif shg_int_model == SelfHelpGroup.InterestModel.EMI or shg_int_model == SelfHelpGroup.InterestModel.COMPOUND:
         if prd_rate > 0:
             emi = principal * (prd_rate * (1 + prd_rate) ** ins_count) / ((1 + prd_rate) ** ins_count - 1)
@@ -456,7 +456,7 @@ class LinkageApplication(GenericLoan):
     ):
         if not self.amortization_schedule:
             self.total_payable, self.amortization_schedule = calculate_repayment_terms(
-                SelfHelpGroup.InterestModel.EMI,
+                SelfHelpGroup.InterestModel.FLAT_DECLINING,
                 self.principal,
                 self.duration,
                 self.interest_rate,
