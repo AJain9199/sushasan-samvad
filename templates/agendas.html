@@ -16,12 +16,12 @@
         margin-bottom: 50px;
         width: 95%;
         max-width: 1100px;
+        text-align: center;
     }
 
     ._heading {
         font-size: 48px;
-        font-weight: 600;
-        text-align: center;
+        font-weight: 700;
         color: #333;
     }
 
@@ -92,7 +92,9 @@
             </table>
         </div>
     {% else %}
-        <h1 class="_heading mt-5">No important agendas are specified for {{ village.name }}</h1>
+        <div class="glass-box">
+            <h1 class="_heading">No important agendas are specified for {{ village.name }}</h1>
+        </div>
     {% endif %}
 </div>
 

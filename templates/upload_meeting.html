@@ -2,30 +2,92 @@
 {% block title %}Upload a Meeting{% endblock %}
 {% block body %}
 {% load widget_tweaks %}
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4">
-    <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">Upload meeting</h1>
-    <div class="backdrop">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-    {% endfor %}
-    {% for field in form.visible_fields %}
-      <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field|add_class:'form-control mb-1' }}
-        {% for error in field.errors %}
-          <span class="help-block">{{ error }}</span>
-        {% endfor %}
-      </div>
-    {% endfor %}
-    <div class="form-group">
-      <button type="submit" class="btn btn-success">
-        <span class="glyphicon glyphicon-ok"></span> Save
-      </button>
-    </div>
 
-    </form>
+<style>
+    .glass-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        margin-top: 70px;
+        margin-bottom: 50px;
+        width: 95%;
+        max-width: 500px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    ._heading {
+        font-size: 48px;
+        font-weight: 600;
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    label {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.5);
+        border: none;
+        border-radius: 10px;
+    }
+
+    .btn-success {
+        margin-top: 20px;
+        padding: 10px 30px;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #28a745;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        ._heading {
+            font-size: 36px;
+        }
+
+        .glass-box {
+            padding: 25px;
+        }
+    }
+</style>
+
+<div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4">
+    <div class="glass-box">
+        <h1 class="_heading">Upload Meeting</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control mb-1' }}
+                    {% for error in field.errors %}
+                        <span class="text-danger small">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-ok"></span> Save
+                </button>
+            </div>
+        </form>
     </div>
-    </div>
+</div>
 {% endblock %}

@@ -9,13 +9,14 @@
 {% village_admin request.user as is_village_admin %}
 
 <style>
+ 
     .glass-box {
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-radius: 15px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-        padding: 30px;
+        padding: 25px;
         margin: 20px auto;
     }
 
@@ -23,7 +24,7 @@
         font-size: 24px;
         font-weight: 500;
         color: #333;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
     .subtext {
@@ -41,8 +42,8 @@
 
     #calendar {
         width: 100%;
-        max-width: 700px;
-        margin: 40px auto;
+        max-width: 600px;
+        margin: 0 auto;
     }
 
     .table th, .table td {
@@ -62,14 +63,14 @@
 
 <div class="container">
 
-    <!-- Scheduled Meetings -->
-    <div class="text-center my-5">
+    <!-- Combined Glass Box: Heading + Upcoming + Calendar -->
+    <div class="glass-box text-center" style="max-width: 800px;">
         <h2 class="section-title">Scheduled Meetings for <b>{{ village.name }}</b></h2>
         <p class="subtext"><a class="text-decoration-underline">{{ num_meetings }}</a> Upcoming meeting(s)</p>
-    </div>
 
-    <!-- Calendar -->
-    <div id="calendar" class="glass-box"></div>
+        <!-- Calendar -->
+        <div id="calendar" style="margin-top: 20px;"></div>
+    </div>
 
     <!-- Schedule a Meeting -->
     {% if is_village_admin %}
@@ -86,7 +87,7 @@
 
         {% if grievances %}
         <div class="table-responsive">
-            <table class="table table-hover table-bordered mt-3">
+            <table class="table table-hover table-bordered mt-3" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; overflow: hidden;">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -130,7 +131,7 @@
         {% endif %}
 
         <div class="table-responsive">
-            <table class="table table-hover table-bordered mt-3">
+            <table class="table table-hover table-bordered mt-3" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; overflow: hidden;">
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -175,6 +176,6 @@
         for (let date in data) {
             myCalendar.select(Object.values(data));
         }
-    })
+    });
 </script>
 {% endblock %}
