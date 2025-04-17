@@ -5,6 +5,17 @@
 {% block body %}
 
     <style>
+        .modal-backdrop {
+    z-index: 1030 !important;
+}
+.modal-dialog {
+    max-width: 600px;
+    margin: 30px auto;
+}
+body.modal-open {
+    overflow: auto !important;
+}
+
         .glass-box {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(14px);
@@ -92,6 +103,11 @@
                 gap: 30px;
                 align-items: center;
             }
+            .uniform-btn {
+    min-width: 180px;
+    text-align: center;
+}
+
         }
     </style>
     <div class="d-flex flex-column justify-content-center align-items-center">
@@ -117,29 +133,29 @@
 
                     <div class="d-flex flex-row">
                         <a href="{% url 'shg_members' shg_id=shg.pk %}">
-                            <button type="button" class="btn btn-primary">Members</button>
+                            <button type="button" class="btn btn-primary uniform-btn " style="height:65px;">Members</button>
                         </a>
                         {% if not is_member %}
-                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-primary mx-3  uniform-btn" data-bs-toggle="modal"
                                     data-bs-target="#popupModal">Join
                             </button>
                         {% else %}
-                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
-                                    data-bs-target="#popupModal2">Contribute
+                            <button type="button" class="btn btn-primary mx-3 uniform-btn" data-bs-toggle="modal"
+                                    data-bs-target="#popupModal2" style="height:65px;">Contribute
                             </button>
                             <a href="{% url 'loan_request' shg_id=shg.id %}">
-                                <button type="button" class="btn btn-primary mx-3"> Request a Loan
+                                <button type="button" class="btn btn-primary mx-3 uniform-btn"> Request a Loan
                                 </button>
                             </a>
                         {% endif %}
 
                         {% if is_admin %}
                             <a href="{% url 'loan_requests' shg_id=shg.id %}">
-                                <button type="button" class="btn btn-primary mb-2 me-2">View Open Loan
+                                <button type="button" class="btn btn-primary mb-2 me-2 uniform-btn">View Open Loan
                                     Requests
                                 </button>
                             </a><a href="{% url 'linkage_banks' shg_id=shg.id %}">
-                            <button type="button" class="btn btn-primary mx-3"> Apply for Bank Linkage
+                            <button type="button" class="btn btn-primary mx-3 uniform-btn"> Apply for Bank Linkage
                             </button>
                         </a>
                         {% endif %}
@@ -189,11 +205,13 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+                <!-- Modal content here -->
+    
+    
+    
                 <div class="modal-header">
                     <h5 class="modal-title" id="popupModalLabel">Join {{ shg.name }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -260,6 +278,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        
         new Chart(document.getElementById('contri-chart'), {
             type: 'pie',
             data: {

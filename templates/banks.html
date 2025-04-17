@@ -5,62 +5,122 @@
 
 {% block body %}
 
+<style>
+    .glass-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        color: #fff;
+    }
+
+    .glass-heading {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .glass-table {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 15px;
+        color: #fff;
+        overflow: hidden;
+    }
+
+    .glass-table th,
+    .glass-table td {
+        background: transparent !important;
+        color: #f1f1f1 !important;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .glass-table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary.btn-sm {
+        font-weight: 500;
+        padding: 6px 12px;
+        min-width: 100px;
+    }
+
+    .currency::before {
+        content: "₹";
+    }
+
+    @media (max-width: 768px) {
+        .glass-heading h1 {
+            font-size: 28px;
+        }
+
+        .glass-container {
+            padding: 15px;
+        }
+    }
+</style>
+
 <div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1>Banks Directory</h1>
-            <p class="lead">List of all partnered financial institutions for SHG linkage</p>
-        </div>
+    <div class="glass-heading">
+        <h1>Banks Directory</h1>
+        <p class="lead">List of all partnered financial institutions for SHG linkage</p>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Bank</th>
-                            <th>Bookkeeping Requirement</th>
-                            <th>Min. Members</th>
-                            <th>Min. Pool (₹)</th>
-                            <th>Interest Rate</th>
-                            <th>Min. Loan (₹)</th>
-                            <th>Review Time</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bank in banks %}
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    {% if bank.image %}
+    <div class="glass-container">
+        <div class="table-responsive">
+            <table class="table table-hover glass-table">
+                <thead>
+                    <tr>
+                        <th>Bank</th>
+                        <th>Bookkeeping Requirement</th>
+                        <th>Min. Members</th>
+                        <th>Min. Pool (₹)</th>
+                        <th>Interest Rate</th>
+                        <th>Min. Loan (₹)</th>
+                        <th>Review Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bank in banks %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if bank.image %}
                                     <img src="{{ bank.image.url }}" alt="{{ bank.name }}" class="me-2" width="40" height="40">
-                                    {% else %}
+                                {% else %}
                                     <img src="{% static 'images/bank-placeholder.png' %}" alt="{{ bank.name }}" class="me-2" width="40" height="40">
-                                    {% endif %}
-                                    <div>
-                                        <strong>{{ bank.name }}</strong>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{ bank.bookkeeping_requirement.days }} days</td>
-                            <td>{{ bank.member_requirement }}</td>
-                            <td class="currency">{{ bank.pool_requirement }}</td>
-                            <td>{{ bank.avg_interest_rate }}%</td>
-                            <td class="currency">{{ bank.min_loan }}</td>
-                            <td>{{ bank.review_time.days }} days</td>
-                            <td>
-                                <a href="{% url 'apply_linkage' shg_id=shg_id bank_id=bank.id %}" class="btn btn-primary btn-sm">
-                                    <i class="bi bi-check-circle me-1"></i> Apply
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                                {% endif %}
+                                <strong>{{ bank.name }}</strong>
+                            </div>
+                        </td>
+                        <td>{{ bank.bookkeeping_requirement.days }} days</td>
+                        <td>{{ bank.member_requirement }}</td>
+                        <td class="currency">{{ bank.pool_requirement }}</td>
+                        <td>{{ bank.avg_interest_rate }}%</td>
+                        <td class="currency">{{ bank.min_loan }}</td>
+                        <td>{{ bank.review_time.days }} days</td>
+                        <td>
+                            <a href="{% url 'apply_linkage' shg_id=shg_id bank_id=bank.id %}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-check-circle me-1"></i> Apply
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
 {% endblock %}

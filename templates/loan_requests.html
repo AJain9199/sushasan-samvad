@@ -6,68 +6,118 @@
 {% load widget_tweaks %}
 {% block body %}
 
+
 <style>
-    /* Glassmorphism Effect */
     body {
         background-size: cover;
         font-family: Arial, sans-serif;
-        height: 100vh;
     }
 
     .glass {
-        background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-        backdrop-filter: blur(10px); /* Glass effect with blur */
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
         border-radius: 15px;
         padding: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 1200px;
+        max-width: 800px;
         margin: 0 auto;
-    }
-
-    /* Table glassmorphism */
-    .table {
-        /* background: rgba(255, 255, 255, 0.15); Semi-transparent background for the table */
-        backdrop-filter: blur(8px); /* Glass effect with blur */
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-    }
-
-    .table th, .table td {
-        text-align: center;
-        /* color: white; */
-    }
-
-    .currency {
+        overflow: hidden;
         font-weight: bold;
     }
 
-    .accordion-toggle {
-        cursor: pointer;
+    label,
+    h1, h2, h3, h4, h5, h6,
+    .formx,
+    .btn,
+    .btn-primary,
+    .form-control::placeholder,
+    .installment-row td {
+        font-weight: bold !important;
     }
 
-    .hidden-row {
-        display: none;
+    .form-control,
+    .btn-primary {
+        border-radius: 8px;
     }
 
-    /* Responsive Design */
+    .formx {
+        font-size: 1.5rem;
+    }
+
+    /* Responsiveness */
     @media only screen and (max-width: 1080px) {
-        .table {
-            width: 100%;
+        #wow {
+            font-size: 6rem;
         }
 
         .formx {
-            font-size: 1.5rem;
+            font-size: 3rem;
         }
 
-        .form-control {
+        .form-control,
+        .selection {
             font-size: 1.5rem;
+            height: 50px;
         }
 
-        .btn {
-            font-size: 1.2rem;
+        .btn-primary {
+            font-size: 2rem;
         }
+    }
+
+    /* Hover Effects */
+    .btn-primary:hover {
+        background-color: rgba(13, 110, 253, 0.8);
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+        transform: scale(1.03);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .installment-row:hover {
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transform: translateY(-2px);
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Offcanvas Glass Effect */
+    .offcanvas-body {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        transition: all 0.3s ease-in-out;
+        font-weight: bold;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    /* Animation */
+    #loanSummary {
+        animation: fadeInSlide 0.6s ease-in-out forwards;
+    }
+
+    @keyframes fadeInSlide {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- The rest of your HTML form/template remains unchanged -->
+<!-- Keep the rest of the code starting from <div class="d-flex flex-column justify-content-center... -->
+
+
     }
 </style>
 

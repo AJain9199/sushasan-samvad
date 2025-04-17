@@ -4,28 +4,103 @@
 {% endblock %}
 
 {% load widget_tweaks %}
+
 {% block body %}
-	<div class="d-flex flex-column justify-content-center w-100 align-items-center mt-5">
-        <h1 class="_heading" style="font-size: 58px">Apply for a linkage loan</h1>
+<style>
+    .glass-heading {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        color: #fff;
+        width: 85%;
+    }
+
+    .glass-form {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        width: 85%;
+        color: #fff;
+    }
+
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: #fff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .btn-primary {
+        padding: 10px 30px;
+        font-weight: 600;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+        background-color: #ffffff !important;
+        color: #0d6efd !important;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    }
+
+    .help-block {
+        color: #ffb3b3;
+        font-size: 14px;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+        .glass-heading, .glass-form {
+            width: 95%;
+        }
+    }
+</style>
+
+<div class="d-flex flex-column justify-content-center align-items-center mt-5">
+    <div class="glass-heading">
+        <h1 class="_heading" style="font-size: 58px;">Apply for a Linkage Loan</h1>
         <h2 class="_subheading" style="font-size: 28px">Fill in the details below</h2>
-        <form method="post" class="form w-100 formx d-flex flex-column justify-content-center align-items-center">
-            {% csrf_token %}
-            {{ form.media.js }}
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-            {% for field in form.visible_fields %}
-                <div class="w-75 mb-3" id="div_{{ field.id_for_label }}">
-                    <label style="text-align: center" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:'form-control' }}
-                    {% for error in field.errors %}
-                        <span class="help-block">{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-ok"></span> Apply
-            </button>
-        </form>
     </div>
+
+    <form method="post" class="form glass-form d-flex flex-column justify-content-center align-items-center">
+        {% csrf_token %}
+        {{ form.media.js }}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+            <div class="w-100 mb-3" id="div_{{ field.id_for_label }}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:'form-control' }}
+                {% for error in field.errors %}
+                    <span class="help-block">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary mt-3">
+            <i class="bi bi-send-check me-1"></i> Apply
+        </button>
+    </form>
+</div>
 {% endblock %}

@@ -3,21 +3,81 @@
 {% block title %}District {{ district.name }}{% endblock %}
 
 {% block body %}
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-        <h1 class="m-3">Villages in District {{ district.name }}</h1>
-        <table class="table w-75 m-3">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Village</th>
-            </tr>
-            </thead>
-            {% for village in villages %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td><a href="{% url 'village' village.id %}">{{ village.name }}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
+    <style>
+        .glass-box {
+            font-size: larger;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 900px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        ._heading {
+            font-size: 48px;
+            font-weight: 600;
+            text-align: center;
+            color: #000;
+            margin-bottom: 30px;
+        }
+
+        .table {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table th, .table td {
+            color: #000 !important;
+            background-color: transparent !important;
+        }
+
+        .table thead th {
+            background: rgba(255, 255, 255, 0.25) !important;
+        }
+
+        a {
+            color: #000;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #333;
+            text-decoration: none;
+        }
+    </style>
+
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-5">
+        <div class="glass-box">
+            <h1 class="_heading">Villages in District {{ district.name }}</h1>
+            <table class="table w-100">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Village</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for village in villages %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td><a href="{% url 'village' village.id %}">{{ village.name }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
