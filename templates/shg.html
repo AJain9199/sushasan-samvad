@@ -4,117 +4,99 @@
 {% endblock %}
 {% block body %}
 
-<style>
-    .glass-box {
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border-radius: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        padding: 30px;
-        margin-bottom: 60px;
-        color: #fff;
-    }
+    <style>
+        .glass-box {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-bottom: 60px;
+            color: #fff;
+        }
 
-    ._heading {
-        font-weight: 700;
-        color: #ffffff;
-        text-shadow: 2px 2px 4px #000;
-    }
+        ._heading {
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px #000;
+        }
 
-    .glass-table {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        overflow: hidden;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        color: #fff;
-        margin-top: 30px;
-    }
+        .glass-table {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #fff;
+            margin-top: 30px;
+        }
 
-    .glass-table th,
-    .glass-table td {
-        background: transparent !important;
-        color: #f1f1f1 !important;
-        vertical-align: middle;
-        text-align: center;
-    }
+        .glass-table th,
+        .glass-table td {
+            background: transparent !important;
+            color: #f1f1f1 !important;
+            vertical-align: middle;
+            text-align: center;
+        }
 
-    .btn-primary,
-    .btn-secondary {
-        font-weight: 500;
-        padding: 8px 16px;
-    }
+        .btn-primary,
+        .btn-secondary {
+            font-weight: 500;
+            padding: 8px 16px;
+        }
 
-    .modal-content {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 15px;
-        color: #fff;
-    }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
+            color: #fff;
+        }
 
-    .modal-title {
-        color: #fff;
-    }
+        .modal-title {
+            color: #fff;
+        }
 
-    label {
-        color: #fff;
-    }
+        label {
+            color: #fff;
+        }
 
-    input.form-control {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: #fff;
-    }
+        input.form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+        }
 
-    input.form-control:focus {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
-    }
+        input.form-control:focus {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
 
-    canvas {
-        background-color: rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 10px;
-        max-width: 300px;
-        max-height: 300px;
-    }
-
-    @media (max-width: 768px) {
         canvas {
-            width: 100% !important;
-            height: auto !important;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 10px;
+            max-width: 300px;
+            max-height: 300px;
         }
 
-        .d-flex.flex-row.justify-content-between.p-3 {
-            flex-direction: column;
-            gap: 30px;
-            align-items: center;
-        }
-    }
-</style>
+        @media (max-width: 768px) {
+            canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
 
-<div class="d-flex flex-column justify-content-center align-items-center">
-    <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">{{ shg.name }}</h1>
-    <div class="glass-box w-75">
-        <div class="d-flex flex-row justify-content-between p-3">
-            <div>
-                <h2 style="font-size: 32px">SHG Details</h2>
-                <p style="font-size: 18px">
-                    Founder: {{ shg.created_by.name }} <br>
-                    Minimum Contribution: ₹{{ shg.min_contribution }} <br>
-                    Pool: ₹{{ shg.pool }} <br>
-                    Members: {{ shg.members.count }} <br>
-                    Target Members: {{ shg.target }} <br>
-                    Created on:
-                    {% for c in shg.shgcontribution_set.all %}
-                        {% if c.user.id == shg.created_by.id %}
-                            {{ c.date }}
-                        {% endif %}
+            .d-flex.flex-row.justify-content-between.p-3 {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center;
+            }
+        }
+    </style>
     <div class="d-flex flex-column justify-content-center align-items-center">
         <h1 class="_heading" style="font-size: 68px; margin-bottom: 40px;">{{ shg.name }}</h1>
-        <div class="backdrop w-75">
+        <div class="glass-box w-75">
             <div class="d-flex flex-row justify-content-between p-3">
                 <div>
                     <h1 style="font-size: 32px" class="white">SHG Details</h1>
@@ -151,50 +133,57 @@
                             </a>
                         {% endif %}
 
-                    {% if is_admin %}
-                    <a href="{% url 'loan_requests' shg_id=shg.id %}">
-                        <button type="button" class="btn btn-primary mb-2 me-2">View Open Loan Requests</button>
-                    </a><a href="{% url 'linkage_banks' shg_id=shg.id %}">
-                                <button type="button" class="btn btn-primary mx-3"> Apply for Bank Linkage
+                        {% if is_admin %}
+                            <a href="{% url 'loan_requests' shg_id=shg.id %}">
+                                <button type="button" class="btn btn-primary mb-2 me-2">View Open Loan
+                                    Requests
                                 </button>
-                            </a>
-                    {% endif %}
+                            </a><a href="{% url 'linkage_banks' shg_id=shg.id %}">
+                            <button type="button" class="btn btn-primary mx-3"> Apply for Bank Linkage
+                            </button>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <canvas id="contri-chart"></canvas>
                 </div>
             </div>
-            <div>
-                <canvas id="contri-chart"></canvas>
-            </div>
-        </div>
 
-        <div class="glass-table">
-            <table class="table table-bordered mb-0">
-                <thead>
+
+            <div class="">
+                <table class="table table-bordered mb-0 rounded overflow-hidden">
+                    <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Member Name</th>
-                        <th scope="col">Contribution</th>
+                        <th scope="col">Transaction with</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for member in shg.shgcontribution_set.all %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ member.user.name }}</td>
-                        <td>₹{{ member.amount }}</td>
-                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for record in history %}
+                        <tr class="{% if record.0 %}table-success{% else %}table-danger{% endif %}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ record.1 }}</td>
+                            <td class="currency">{{ record.2 }}</td>
+                            <td>{{ record.3|date:"F j, Y" }}</td>
+                        </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel" aria-hidden="true">
+    <div class="modal fade" id="popupModal" tabindex="-1" aria-labelledby="popupModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="popupModalLabel">Join {{ shg.name }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
 
                 <form method="POST" action="{% url 'join_shg' %}" id="join_form"
@@ -204,7 +193,8 @@
                     <div class="form-group mb-3" id="div_{{ field.id_for_label }}">
                         <label style="text-align: center" for="amt">Amount to contribute (Min.
                             Rs. {{ shg.min_contribution }})</label>
-                        <input type="number" name="amt" class="form-control" id="amt" placeholder="Enter amount"
+                        <input type="number" name="amt" class="form-control" id="amt"
+                               placeholder="Enter amount"
                                required>
                     </div>
                 </form>
@@ -212,19 +202,22 @@
                     <button type="button" class="btn btn-primary"
                             onclick="document.querySelector('#join_form').submit()">Join
                     </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     {% if is_member %}
-        <div class="modal fade" id="popupModal2" tabindex="-1" aria-labelledby="popupModal2Label" aria-hidden="true">
+        <div class="modal fade" id="popupModal2" tabindex="-1" aria-labelledby="popupModal2Label"
+             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="popupModal2Label">Contribute to {{ shg.name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                     </div>
 
                     <form method="POST" action="{% url 'contribute' shg_id=shg.id %}" id="contri_form"
@@ -242,7 +235,8 @@
                         <button type="button" class="btn btn-primary"
                                 onclick="document.querySelector('#contri_form').submit()">Contribute
                         </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                        </button>
                     </div>
                 </div>
             </div>
@@ -263,7 +257,7 @@
 
                         {% for linkage in shg.linkageapplication_set.all %}
                             {% if linkage.is_approved %}
-                            {{ linkage.principal }},
+                                {{ linkage.principal }},
                             {% endif %}
                         {% endfor %}
 
@@ -276,7 +270,7 @@
                     {% endfor %}
                     {% for linkage in shg.linkageapplication_set.all %}
                         {% if linkage.is_approved %}
-                        'Loan from {{ linkage.bank.name }}',
+                            'Loan from {{ linkage.bank.name }}',
                         {% endif %}
                     {% endfor %}
                 ],

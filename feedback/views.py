@@ -1,10 +1,14 @@
+import datetime
 import random
+from operator import itemgetter
+
+import django
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from .forms import RegistrationForm, UploadMeetingForm, SuggestionForm, ShareGrievanceForm, ScheduleMeetingForm, \
     LoginForm, SHGForm, SHGLoanRequestForm, ExternLinkageForm
 from .models import Meeting, MeetingSuggestion, State, District, SubDistrict, Village, Grievance, ScheduleMeeting, User, \
-    SelfHelpGroup, SHGContribution, SHGLoan, calculate_repayment_terms, ExternalLinkageBank
+    SelfHelpGroup, SHGContribution, SHGLoan, calculate_repayment_terms, ExternalLinkageBank, GenericLoan
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -233,8 +237,8 @@ def shgs(request):
 
 @login_required
 def shg(request, shg_id):
-    shg_data = SelfHelpGroup.objects.get(id=shg_id)
-    membership = shg_data.shgcontribution_set.filter(user_id=request.user.id)
+    shg = SelfHelpGroup.objects.get(id=shg_id)
+    membership = shg.shgcontribution_set.filter(user_id=request.user.id)
     is_member = False
     is_admin = False
 
@@ -243,7 +247,58 @@ def shg(request, shg_id):
         if membership.first().role == SHGContribution.SHGRoles.ADMIN:
             is_admin = True
 
-    return render(request, 'shg.html', {'shg': shg_data, 'is_member': is_member, 'is_admin': is_admin})
+    transaction_history = []
+    for transaction in shg.shgcontribution_set.all():
+        for c in transaction.contrib:
+            transaction_history.append([
+                True,
+                transaction.user.name,
+                c[1],
+                datetime.datetime.fromisoformat(c[0]).date(),
+                1
+            ])
+
+    for loan in SHGLoan.objects.filter(shg=shg, status=GenericLoan.Status.ACTIVE):
+        transaction_history.append([
+            False,
+            loan.user.name,
+            loan.principal,
+            loan.approval_date,
+            2
+        ])
+
+        for repayments in loan.amortization_schedule:
+            if datetime.datetime.fromisoformat(repayments[3]) < django.utils.timezone.now():
+                transaction_history.append([
+                    True,
+                    loan.user.name,
+                    repayments[2],
+                    datetime.datetime.fromisoformat(repayments[3]).date(),
+                    3
+                ])
+
+    for bank_loan in shg.linkageapplication_set.filter(status=GenericLoan.Status.ACTIVE):
+        transaction_history.append([
+            False,
+            bank_loan.bank.name,
+            bank_loan.principal,
+            bank_loan.approval_date,
+            4
+        ])
+
+        for repayments in bank_loan.amortization_schedule:
+            if datetime.datetime.fromisoformat(repayments[3]) < datetime.datetime.now():
+                transaction_history.append([
+                    True,
+                    bank_loan.bank.name,
+                    repayments[2],
+                    datetime.datetime.fromisoformat(repayments[3]).date(),
+                    5
+                ])
+    transaction_history = [t for t in transaction_history if t[3]]
+    transaction_history = sorted(transaction_history, key=itemgetter(3))
+
+    return render(request, 'shg.html', {'shg': shg, 'is_member': is_member, 'is_admin': is_admin, 'history': transaction_history})
 
 
 @login_required

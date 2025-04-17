@@ -135,4 +135,206 @@
     </div>
 </div>
 
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Loan Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="loanSummary" class="bg-light rounded p-3 mb-4">
+            <!-- Loading Spinner -->
+            <div id="summaryLoader" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Summary Content -->
+            <div id="summaryContent">
+                <h5>Total Payable</h5>
+                <div id="totalPayable" class="fs-1 fw-bold text-primary mb-3">$0.00</div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-muted">Principal</div>
+                        <div id="principalAmount" class="fw-bold">$0.00</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-muted">Interest</div>
+                        <div id="interestAmount" class="fw-bold">$0.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <h5>Amortization Schedule</h5>
+        </div>
+
+        <div class="table-container">
+            <div class="loading-spinner" id="scheduleLoader">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <table class="table table-sm" id="amortizationTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="amortizationBody">
+                    <!-- Amortization data will be inserted here -->
+                </tbody>
+            </table>
+            <div id="noDataMessage" class="text-center py-4" style="display: none;">
+                <i class="fas fa-exclamation-circle text-muted mb-2" style="font-size: 2rem;"></i>
+                <p>No amortization data available</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Elements
+    const summaryLoader = document.getElementById('summaryLoader');
+    const summaryContent = document.getElementById('summaryContent');
+    const scheduleLoader = document.getElementById('scheduleLoader');
+    const amortizationTable = document.getElementById('amortizationTable');
+    const amortizationBody = document.getElementById('amortizationBody');
+    const noDataMessage = document.getElementById('noDataMessage');
+    const totalPayable = document.getElementById('totalPayable');
+    const principalAmount = document.getElementById('principalAmount');
+    const interestAmount = document.getElementById('interestAmount');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const showPaidInstallments = document.getElementById('showPaidInstallments');
+    const showBtn = document.getElementById('seeLoan');
+
+    // Format currency
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR'
+        }).format(amount);
+    };
+
+    function getFieldData(id) {
+        return document.getElementById(id).value;
+    }
+
+    function collectData() {
+        let data = new FormData();
+        data.append("principal", getFieldData("{{ shg_form.principal.id_for_label }}"));
+        data.append("interest_rate", getFieldData("{{ shg_form.interest_rate.id_for_label }}"));
+        data.append("duration", getFieldData("{{ shg_form.duration.id_for_label }}"));
+        data.append("repayment_freq", getFieldData("{{ shg_form.repayment_freq.id_for_label }}"));
+        return data;
+    }
+
+    // Fetch loan data from API
+    const fetchLoanData = async () => {
+        showLoaders();
+
+        try {
+            let send_data = collectData();
+            send_data.append("draft", true);
+            send_data.append("shg_id", {{ shg.id }});
+            send_data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+            const response = await fetch("{% url 'loan_details' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: send_data
+            });
+
+            const data = await response.json();
+
+            updateSummary(data);
+            updateAmortizationSchedule(data.amortzn);
+
+        } catch (error) {
+            console.error('Error fetching loan data:', error);
+            showErrorMessage();
+        }
+    };
+
+    // Show loaders
+    const showLoaders = () => {
+        summaryLoader.style.display = 'flex';
+        summaryContent.style.display = 'none';
+        scheduleLoader.style.display = 'flex';
+        amortizationTable.style.display = 'none';
+        noDataMessage.style.display = 'none';
+    };
+
+    // Show error message
+    const showErrorMessage = () => {
+        summaryLoader.style.display = 'none';
+        summaryContent.style.display = 'block';
+        scheduleLoader.style.display = 'none';
+        noDataMessage.style.display = 'block';
+        amortizationTable.style.display = 'none';
+
+        totalPayable.textContent = 'Error loading data';
+        principalAmount.textContent = '-';
+        interestAmount.textContent = '-';
+        noDataMessage.querySelector('p').textContent = 'Failed to load amortization data. Please try again.';
+    };
+
+    // Update summary section
+    const updateSummary = (data) => {
+        summaryLoader.style.display = 'none';
+        summaryContent.style.display = 'block';
+
+        totalPayable.textContent = formatCurrency(data.total_payable);
+        let principal = parseFloat(getFieldData("{{ shg_form.principal.id_for_label }}"));
+        principalAmount.textContent = formatCurrency(principal);
+        interestAmount.textContent = formatCurrency(data.total_payable - principal);
+    };
+
+    // Update amortization schedule table
+    const updateAmortizationSchedule = (schedule) => {
+        scheduleLoader.style.display = 'none';
+
+        if (!schedule || schedule.length === 0) {
+            noDataMessage.style.display = 'block';
+            amortizationTable.style.display = 'none';
+            return;
+        }
+
+        amortizationTable.style.display = 'table';
+        amortizationBody.innerHTML = '';
+
+
+        let i = 1;
+        schedule.forEach(installment => {
+            const row = document.createElement('tr');
+            row.className = 'installment-row';
+
+            row.innerHTML = `
+                    <td>${i}</td>
+                    <td>${formatCurrency(installment[0])}</td>
+                    <td>${formatCurrency(installment[1])}</td>
+                    <td>${formatCurrency(installment[2])}</td>
+                `;
+
+            amortizationBody.appendChild(row);
+            i += 1;
+        });
+
+        if (amortizationBody.children.length === 0) {
+            noDataMessage.style.display = 'block';
+            amortizationTable.style.display = 'none';
+            noDataMessage.querySelector('p').textContent = 'No installments to display with current filter settings.';
+        }
+    };
+
+
+    refreshBtn.addEventListener('click', fetchLoanData);
+</script>
+
 {% endblock %}
