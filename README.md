@@ -2,7 +2,7 @@
 ## Website Screenshots
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%203.png)
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%201.png)
-![Website screenshot](static/Github%20Screenshots/Screenshot%202.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot%202.png)
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%204.png)
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%205.png)
 ## Technologies Used
