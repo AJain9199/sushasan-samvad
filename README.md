@@ -1,8 +1,10 @@
 # Sushasan Samvad
 ## Website Screenshots
-![Website screenshot](static/GitHub%20Screenshots/Screenshot.jpg)
-![Website screenshot](static/Github%20Screenshots/Screenshot%201.jpg)
-![Website screenshot](static/GitHub%20Screenshots/Screenshot%202.jpg)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot 3.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot 1.png)
+![Website screenshot](static/Github%20Screenshots/Screenshot 2.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot 4.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot 5.png)
 ## Technologies Used
 ### Languages
  - Python
