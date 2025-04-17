@@ -1,11 +1,12 @@
 # Sushasan Samvad
 Sushasan Samvad is a web application designed to organize the local governance setup of rural India, and provide easier access to cheap and affordable credit by digitizing the functioning of SHGs.
 ## Website Screenshots
-![Website screenshot](static/GitHub%20Screenshots/Screenshot%203.png)
-![Website screenshot](static/GitHub%20Screenshots/Screenshot%201.png)
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%202.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot%201.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot%203.png)
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%204.png)
 ![Website screenshot](static/GitHub%20Screenshots/Screenshot%205.png)
+![Website screenshot](static/GitHub%20Screenshots/Screenshot%206.png)
 ## Technologies Used
 ### Languages
  - Python
