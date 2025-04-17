@@ -123,7 +123,8 @@ def meeting(request, meeting_id):
 @user_passes_test(is_district_admin)
 def district(request, dist_id):
     dist = District.objects.get(id=dist_id)
-    return render(request, 'district.html', {'district': dist, 'villages': Village.objects.filter(district_id=dist_id)})
+    subdist = SubDistrict.objects.filter(district_id=dist_id)
+    return render(request, 'district.html', {'district': dist, 'villages': Village.objects.filter(sub_district__in=subdist)})
 
 
 def village(request, village_id):
